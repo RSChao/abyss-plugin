@@ -1,0 +1,4 @@
+name: deltaplugin
+main: com.delta.plugins.Plugin
+version: 1.0
+api-version: 1.21
