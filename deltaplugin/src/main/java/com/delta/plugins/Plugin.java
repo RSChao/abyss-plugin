@@ -10,6 +10,7 @@ import com.delta.plugins.items.Items;
 import com.delta.plugins.techs.assasin;
 import com.delta.plugins.techs.assaultant;
 import com.delta.plugins.techs.berserker;
+import com.delta.plugins.techs.roaring_soul;
 
 /*
  * deltaplugin java plugin
@@ -29,6 +30,7 @@ public class Plugin extends JavaPlugin
     assasin.registerTechniques();
     berserker.registerTechniques();
     assaultant.registerTechniques();
+    roaring_soul.register();
     // Register events
     getServer().getPluginManager().registerEvents(new com.delta.plugins.events.events(), this);
   }

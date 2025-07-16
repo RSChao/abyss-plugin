@@ -5,6 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
@@ -17,10 +19,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.delta.plugins.Plugin;
 import com.rschao.plugins.techapi.tech.PlayerTechniqueManager;
 import com.rschao.plugins.techapi.tech.Technique;
+import com.rschao.plugins.techapi.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techapi.tech.register.TechRegistry;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class events implements Listener {
     public static final Map<UUID, Boolean> hasCritDamage = new HashMap<>();
+    public static final Map<UUID, Boolean> hasGenoDamage = new HashMap<>();
     public static final Map<UUID, Integer> playerTechniques = new HashMap<>();
     // Track which group id index the player is currently using (0-2)
     public static final Map<UUID, Integer> playerGroupIdIndex = new HashMap<>();
@@ -106,7 +112,38 @@ public class events implements Listener {
                 event.setDamage(damage * 1.5); // Example: increase damage by 50%
                 player.sendMessage("You dealt critical damage!");
             }
+            else if(hasGenoDamage.getOrDefault(playerId, false)) {
+                event.setDamage(1000); // Example: double the damage
+                player.sendMessage(ChatColor.DARK_RED + "=}");
+                hasGenoDamage.put(playerId, false); // Reset geno damage after use
+            }
         }
         
+    }
+
+    @EventHandler
+    public void onHotbarSwitch(PlayerItemHeldEvent event) {
+        Player player = event.getPlayer();
+        ItemStack newItem = player.getInventory().getItem(event.getNewSlot());
+        if (newItem == null || newItem.getType() == null || !newItem.hasItemMeta()) return;
+        if (!newItem.getItemMeta().getPersistentDataContainer().has(
+                new NamespacedKey(Plugin.getPlugin(Plugin.class), "channeler"),
+                PersistentDataType.BOOLEAN)) return;
+
+        // Get current group id index for player (default 0)
+        int groupIndex = playerGroupIdIndex.getOrDefault(player.getUniqueId(), 0);
+        String groupId = getGroupId(player, groupIndex);
+        if (groupId == null || groupId.equals("none")) {
+            hotbarMessage.sendHotbarMessage(player, "No group id set.");
+            return;
+        }
+        int techIndex = PlayerTechniqueManager.getCurrentTechnique(player.getUniqueId(), groupId);
+        java.util.List<Technique> techs = TechRegistry.getAllTechniques(groupId);
+        if (techs == null || techs.isEmpty() || techIndex < 0 || techIndex >= techs.size()) {
+            hotbarMessage.sendHotbarMessage(player, "No technique selected.");
+            return;
+        }
+        String techName = techs.get(techIndex).getName();
+        hotbarMessage.sendHotbarMessage(player, "Technique: " + techName + " (Group: " + groupId + ")");
     }
 }
