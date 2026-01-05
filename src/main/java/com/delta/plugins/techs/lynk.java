@@ -1,11 +1,13 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
-import com.rschao.plugins.techapi.tech.Technique;
-import com.rschao.plugins.techapi.tech.cooldown.cooldownHelper;
-import com.rschao.plugins.techapi.tech.feedback.hotbarMessage;
-import com.rschao.plugins.techapi.tech.register.TechRegistry;
-import com.rschao.plugins.techapi.tech.PlayerTechniqueManager; // added
+import com.rschao.plugins.techniqueAPI.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
+import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
+import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
+import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
+import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager; // added
 
 // Nuevos imports necesarios de Bukkit
 import org.bukkit.Bukkit;
@@ -30,9 +32,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.World;
 
+import java.util.List;
+
 public class lynk {
 
-    static final String TECH_ID = "hyrule_hero";
+    static final String TECH_ID = "lynk";
     static final Plugin plugin = Plugin.getPlugin(Plugin.class);
     public static void register() {
         Plugin.registerAbyssID(TECH_ID);
@@ -42,140 +46,198 @@ public class lynk {
         TechRegistry.registerTechnique(TECH_ID, ganonUltimate);
     }
 
-    static Technique wall = new Technique("lapare", "Las manos arriba, las manos abajo, y te comes el muro", false, cooldownHelper.minutesToMiliseconds(5), (player, item, args) -> {
-        // Obtener el bloque objetivo hasta 80 bloques
-        Block target = player.getTargetBlockExact(80);
-        if (target == null) return;
+    static Technique wall = new Technique(
+        "lapare",
+        "Las manos arriba, las manos abajo, y te comes el muro",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(5), List.of("Throw a player into a wall.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            Block target = player.getTargetBlockExact(80);
+            if (target == null) return;
 
-        Location targetLoc = target.getLocation().add(0.5, 1.0, 0.5); // punto sobre el bloque
-        double d = player.getLocation().distance(targetLoc);
-        if (d >= 80) return; // requiere menor que 80
+            Location targetLoc = target.getLocation().add(0.5, 1.0, 0.5);
+            double d = player.getLocation().distance(targetLoc);
+            if (d >= 80) return;
 
-        // Buscar el jugador más cercano en el mismo mundo (excluyendo al usuario)
-        Player closestP = null;
-        double minDist = Double.MAX_VALUE;
-        for (Player p : player.getWorld().getPlayers()) {
-            if (p.equals(player)) continue;
-            // Excluir jugadores inmunes
-            if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
-            double distToUser = player.getLocation().distance(p.getLocation());
-            if (distToUser < minDist) {
-                minDist = distToUser;
-                closestP = p;
+            Player closestP = null;
+            double minDist = Double.MAX_VALUE;
+            for (Player p : player.getWorld().getPlayers()) {
+                if (p.equals(player)) continue;
+                if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
+                double distToUser = player.getLocation().distance(p.getLocation());
+                if (distToUser < minDist) {
+                    minDist = distToUser;
+                    closestP = p;
+                }
             }
+            final Player closest = closestP;
+            if (closest == null) return;
+            if (minDist >= 40) return;
+
+            Vector toTarget = targetLoc.toVector().subtract(closest.getLocation().toVector()).normalize();
+            closest.setVelocity(toTarget.multiply(2.0).add(new Vector(0, 0.6, 0)));
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                try { closest.teleport(targetLoc); } catch (Exception ignored) {}
+                double damage = 400.0 / Math.max(0.001, d);
+                try { closest.damage(damage, player); } catch (Exception e) { closest.damage(damage); }
+                try { closest.setVelocity(new Vector(0,0,0)); } catch (Exception ignored) {}
+            }, 8L);
         }
-        final Player closest = closestP;
-        if (closest == null) return;
-        if (minDist >= 40) return; // requiere menor que 40
+    );
 
-        // Empujar al jugador hacia el bloque: primer impulso para moverlo, luego teletransportarlo y aplicar daño
-        Vector toTarget = targetLoc.toVector().subtract(closest.getLocation().toVector()).normalize();
-        // Impulso inicial (lleva al jugador hacia el bloque)
-        closest.setVelocity(toTarget.multiply(2.0).add(new Vector(0, 0.6, 0)));
+    static Technique paralyze = new Technique(
+        "paralyze",
+        "Kieto parao",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(20), List.of("Paralyze nearest player.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            Player closestP = null;
+            double minDist = Double.MAX_VALUE;
+            for (Player p : player.getWorld().getPlayers()) {
+                if (p.equals(player)) continue;
+                if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
+                double distToUser = player.getLocation().distance(p.getLocation());
+                if (distToUser < minDist) {
+                    minDist = distToUser;
+                    closestP = p;
+                }
+            }
+            final Player closest = closestP;
+            if (closest == null) return;
+            if (minDist >= 40) return;
 
-        // Esperar un pequeño tiempo para simular impacto y luego fijar la posición y aplicar daño
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            // Teletransportar al jugador justo contra el bloque y bloquear su movimiento momentáneamente
+            int durationTicks = 20 * 10;
+            int slownessAmplifier = 255;
             try {
-                closest.teleport(targetLoc);
+                PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, durationTicks, slownessAmplifier, false, false);
+                closest.addPotionEffect(slow, true);
             } catch (Exception ignored) {}
 
-            // Calcular daño: 400 / d
-            double damage = 400.0 / Math.max(0.001, d);
-            // Aplicar daño atribuido al usuario (si la API soporta atacante)
+            try { closest.setVelocity(new Vector(0,0,0)); } catch (Exception ignored) {}
+
             try {
-                closest.damage(damage, player);
-            } catch (Exception e) {
-                // fallback sin atacante
-                closest.damage(damage);
-            }
-
-            // Opcional: detener velocidad residual
-            closest.setVelocity(new Vector(0, 0, 0));
-        }, 8L); // ~0.4s (8 ticks) de espera para el "smash"
-    });
-
-
-    static Technique paralyze = new Technique("paralyze", "Kieto parao", false, cooldownHelper.minutesToMiliseconds(20), (player, item, args) -> {
-        // Buscar el jugador más cercano en el mismo mundo (excluyendo al usuario)
-        Player closestP = null;
-        double minDist = Double.MAX_VALUE;
-        for (Player p : player.getWorld().getPlayers()) {
-            if (p.equals(player)) continue;
-            // Excluir jugadores inmunes
-            if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
-            double distToUser = player.getLocation().distance(p.getLocation());
-            if (distToUser < minDist) {
-                minDist = distToUser;
-                closestP = p;
-            }
+                PotionEffect strength = new PotionEffect(PotionEffectType.STRENGTH, durationTicks, 1, false, false);
+                player.addPotionEffect(strength, true);
+            } catch (Exception ignored) {}
         }
-        final Player closest = closestP;
-        if (closest == null) return;
-        if (minDist >= 40) return; // requiere menor que 40
+    );
 
-        // Aplicar parálisis: Slowness nivel 255 por 10 segundos (200 ticks)
-        int durationTicks = 20 * 10;
-        int slownessAmplifier = 255; // intensidad solicitada
-        try {
-            PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, durationTicks, slownessAmplifier, false, false);
-            closest.addPotionEffect(slow, true);
-        } catch (Exception ignored) {}
+    // Agregado: técnica clon migrada y adaptada a TechniqueAPI
+    static Technique clon = new Technique(
+        "zombie_summon",
+        "Magia seika",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(10), List.of("Invoca un clon zombi basado en el jugador.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            Player closest = roaring_soul.getClosestPlayer(player.getLocation());
+            if (closest == null || closest.isDead() || closest.getLocation().distance(player.getLocation()) > 16) {
+                closest = player;
+            }
 
-        // Asegurar que el objetivo no se mueva inmediatamente
-        try { closest.setVelocity(new Vector(0,0,0)); } catch (Exception ignored) {}
+            // Obtener salud del jugador
+            double health = player.getHealth();
+            double maxHealth = player.getAttribute(Attribute.MAX_HEALTH).getValue();
 
-        // Dar fuerza al usuario por el mismo tiempo (ej. Strength I)
-        try {
-            PotionEffect strength = new PotionEffect(PotionEffectType.STRENGTH, durationTicks, 1, false, false);
-            player.addPotionEffect(strength, true);
-        } catch (Exception ignored) {}
-    });
+            // Obtener arma del jugador (preferir netherite sword)
+            ItemStack weapon = player.getInventory().getItemInMainHand();
+            if (weapon == null || !weapon.getType().name().endsWith("_SWORD") || weapon.getType() != Material.NETHERITE_SWORD) {
+                weapon = null;
+                for (ItemStack is : player.getInventory().getContents()) {
+                    if (is != null && is.getType().name().endsWith("_SWORD")) {
+                        weapon = is;
+                        break;
+                    }
+                }
+            }
+
+            // Obtener armadura
+            PlayerInventory inv = player.getInventory();
+            ItemStack[] armor = inv.getArmorContents();
+
+            // Spawn 1 zombie (ajustable)
+            for (int i = 0; i < 1; i++) {
+                Location spawnLoc = player.getLocation().clone();
+                double angle = Math.toRadians(0);
+                spawnLoc.add(Math.cos(angle) * 2, 0, Math.sin(angle) * 2);
+
+                Zombie zombie = (Zombie) player.getWorld().spawnEntity(spawnLoc, EntityType.ZOMBIE);
+                zombie.setCustomName("Guerrero de " + player.getName());
+                zombie.setCustomNameVisible(true);
+                zombie.setPersistent(true);
+                zombie.setRemoveWhenFarAway(false);
+
+                // Set health
+                try {
+                    zombie.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
+                    zombie.setHealth(Math.min(health, maxHealth));
+                } catch (Exception ignored) {}
+
+                // Set weapon and armor
+                org.bukkit.entity.Entity zEnt = zombie;
+                org.bukkit.inventory.EntityEquipment eq = zombie.getEquipment();
+                if (weapon != null && eq != null) eq.setItemInMainHand(weapon.clone());
+                if (eq != null) eq.setArmorContents(armor);
+                if (eq != null) {
+                    eq.setItemInMainHandDropChance(0);
+                    eq.setHelmetDropChance(0);
+                    eq.setChestplateDropChance(0);
+                    eq.setLeggingsDropChance(0);
+                    eq.setBootsDropChance(0);
+                }
+
+                // Set target
+                zombie.setTarget(closest);
+                // Forzar targeting por si la IA no lo toma
+                Bukkit.getPluginManager().callEvent(new org.bukkit.event.entity.EntityTargetLivingEntityEvent(zombie, closest, org.bukkit.event.entity.EntityTargetEvent.TargetReason.CLOSEST_PLAYER));
+            }
+
+            hotbarMessage.sendHotbarMessage(player, "¡Has invocado un clon!");
+        }
+    );
 
     // Nueva técnica: envía jugadores a la ubicación de config "ganon_dim.loc" por 5 minutos y aplica Wither II a todos excepto el usuario
-    static Technique ganonUltimate = new Technique("ganon_ultimate", "Ganon's Banish", true, cooldownHelper.minutesToMiliseconds(60), (player, item, args) -> {
-        // Duración en ticks (5 minutos)
-        final long durationTicks = 20L * 60L * 5L; // 6000L
-
-        // Obtener la ubicación objetivo desde la config
-        Location target = getGanonLocationFromConfig();
-        if (target == null) {
-            hotbarMessage.sendHotbarMessage(player, "ganon_dim.loc no está configurado correctamente. Habla con un admin");
-            return;
-        }
-
-        // Teletransportar todos los jugadores en el mismo mundo y dentro de 60 bloques
-        for (Player p : player.getWorld().getPlayers()) {
-            if (p.equals(player)) continue;
-            double dist = player.getLocation().distance(p.getLocation());
-            if (dist <= 60.0) {
-                // Excluir jugadores inmunes
-                if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
-                final Location original = p.getLocation().clone();
-                // Teleportar al destino
-                try { p.teleport(target); } catch (Exception ignored) {}
-                // Programar retorno después de 5 minutos
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    try {
-                        if (!p.isDead()) p.teleport(original);
-                    } catch (Exception ignored) {}
-                }, durationTicks);
+    static Technique ganonUltimate = new Technique(
+        "ganon_ultimate",
+        "Ganon's Banish",
+        new TechniqueMeta(true, cooldownHelper.minutesToMiliseconds(60), List.of("Send nearby players to configured location and apply Wither.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            final long durationTicks = 20L * 60L * 5L;
+            Location target = getGanonLocationFromConfig();
+            if (target == null) {
+                hotbarMessage.sendHotbarMessage(player, "ganon_dim.loc no está configurado correctamente. Habla con un admin");
+                return;
             }
-        }
+            for (Player p : player.getWorld().getPlayers()) {
+                if (p.equals(player)) continue;
+                double dist = player.getLocation().distance(p.getLocation());
+                if (dist <= 60.0) {
+                    if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
+                    final Location original = p.getLocation().clone();
+                    try { p.teleport(target); } catch (Exception ignored) {}
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        try { if (!p.isDead()) p.teleport(original); } catch (Exception ignored) {}
+                    }, durationTicks);
+                }
+            }
 
-        // Aplicar Wither II a todos los jugadores en línea excepto el usuario por 5 minutos
-        int witherAmp = 1; // amplifier 1 => Wither II
-        int witherDuration = (int) durationTicks;
-        PotionEffect wither = new PotionEffect(PotionEffectType.WITHER, witherDuration, witherAmp, false, false);
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online.equals(player)) continue;
-            // Excluir jugadores inmunes
-            if (PlayerTechniqueManager.isInmune(online.getUniqueId())) continue;
-            try { online.addPotionEffect(wither, true); } catch (Exception ignored) {}
-        }
+            int witherAmp = 1;
+            int witherDuration = (int) durationTicks;
+            PotionEffect wither = new PotionEffect(PotionEffectType.WITHER, witherDuration, witherAmp, false, false);
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (online.equals(player)) continue;
+                if (PlayerTechniqueManager.isInmune(online.getUniqueId())) continue;
+                try { online.addPotionEffect(wither, true); } catch (Exception ignored) {}
+            }
 
-        hotbarMessage.sendHotbarMessage(player, "¡Ganon ha enviado a los cercanos al abismo!");
-    });
+            hotbarMessage.sendHotbarMessage(player, "¡Ganon ha enviado a los cercanos al abismo!");
+        }
+    );
 
     // Helper para parsear "ganon_dim.loc" desde config. Acepta:
     // - una sección con keys world, x, y, z, (opcional) yaw, pitch
@@ -215,66 +277,4 @@ public class lynk {
             return null;
         }
     }
-
-    static Technique clon = new Technique("zombie_summon", "Magia seika", false, cooldownHelper.minutesToMiliseconds(10), (player, item, args) -> {
-        Player closest = roaring_soul.getClosestPlayer(player.getLocation());
-        if(closest == null || closest.isDead() || closest.getLocation().distance(player.getLocation()) > 16){
-            closest = player;
-        }
-
-
-        // Get player's health
-        double health = player.getHealth();
-        double maxHealth = player.getAttribute(Attribute.MAX_HEALTH).getValue();
-
-        // Get player's weapon (prefer netherite sword, else any sword in inventory)
-        ItemStack weapon = player.getInventory().getItemInMainHand();
-        if (weapon == null || weapon.getType() != Material.NETHERITE_SWORD) {
-            weapon = null;
-            for (ItemStack is : player.getInventory().getContents()) {
-                if (is != null && is.getType().name().endsWith("_SWORD")) {
-                    weapon = is;
-                    break;
-                }
-            }
-        }
-
-        // Get player's armor
-        PlayerInventory inv = player.getInventory();
-        ItemStack[] armor = inv.getArmorContents();
-
-        // Spawn 2 zombies, 2 blocks away from player
-        for (int i = 0; i < 1; i++) {
-            Location spawnLoc = player.getLocation().clone();
-            double angle = Math.toRadians(0); // 0 and 180 degrees
-            spawnLoc.add(Math.cos(angle) * 2, 0, Math.sin(angle) * 2);
-
-            Zombie zombie = (Zombie) player.getWorld().spawnEntity(spawnLoc, EntityType.ZOMBIE);
-            zombie.setCustomName("Guerrero de " + player.getName());
-            zombie.setCustomNameVisible(true);
-            zombie.setPersistent(true);
-            zombie.setRemoveWhenFarAway(false);
-
-            // Set health
-            zombie.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
-            zombie.setHealth(Math.min(health, maxHealth));
-
-            // Set weapon and armor
-            EntityEquipment eq = zombie.getEquipment();
-            if (weapon != null) eq.setItemInMainHand(weapon.clone());
-            eq.setArmorContents(armor);
-            eq.setItemInMainHandDropChance(0);
-            eq.setHelmetDropChance(0);
-            eq.setChestplateDropChance(0);
-            eq.setLeggingsDropChance(0);
-            eq.setBootsDropChance(0);
-
-            // Set target
-            zombie.setTarget(closest);
-            // Force targeting in case AI doesn't pick up
-            Bukkit.getPluginManager().callEvent(new org.bukkit.event.entity.EntityTargetLivingEntityEvent(zombie, closest, EntityTargetEvent.TargetReason.CLOSEST_PLAYER));
-        }
-
-        hotbarMessage.sendHotbarMessage(player, "¡Has invocado un clon!");
-    });
 }

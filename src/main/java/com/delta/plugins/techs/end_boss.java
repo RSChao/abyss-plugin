@@ -2,11 +2,15 @@ package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
 import com.delta.plugins.events.events;
-import com.rschao.plugins.techapi.tech.PlayerTechniqueManager;
-import com.rschao.plugins.techapi.tech.Technique;
-import com.rschao.plugins.techapi.tech.cooldown.cooldownHelper;
-import com.rschao.plugins.techapi.tech.feedback.hotbarMessage;
-import com.rschao.plugins.techapi.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
+import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
+import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
+import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
+import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
+import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -32,25 +36,31 @@ public class end_boss {
         Plugin.registerAbyssID(TECH_ID);
     }
 
-    static Technique blackFlash = new Technique("flash", "Black Flash", false, cooldownHelper.minutesToMiliseconds(4), (player, item, args)->{
-        events.hasFlashDamage.put(player.getUniqueId(), true);
-        hotbarMessage.sendHotbarMessage(player, "You have activated Black Flash!");
-        Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> {
-            //check if player still has black flash active
-            if (!events.hasFlashDamage.getOrDefault(player.getUniqueId(), false)) {
-                events.hasFlashDamage.put(player.getUniqueId(), false);
-                hotbarMessage.sendHotbarMessage(player, "Black Flash has ended.");
-            }
-        }, 20 * 10); // 10 seconds duration
-    });
+    static Technique blackFlash = new Technique(
+        "flash",
+        "Black Flash",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(4), List.of("Temporarily set flash damage flag.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            events.hasFlashDamage.put(player.getUniqueId(), true);
+            hotbarMessage.sendHotbarMessage(player, "You have activated Black Flash!");
+            Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> {
+                if (!events.hasFlashDamage.getOrDefault(player.getUniqueId(), false)) {
+                    events.hasFlashDamage.put(player.getUniqueId(), false);
+                    hotbarMessage.sendHotbarMessage(player, "Black Flash has ended.");
+                }
+            }, 20 * 10);
+        }
+    );
 
-    // Technique 2: Laser Sweep
     static Technique laserSweep = new Technique(
             "lasersweep",
             "Laser Sweep",
-            false,
-            cooldownHelper.secondsToMiliseconds(60),
-            (player, item, args) -> {
+            new TechniqueMeta(false, cooldownHelper.secondsToMiliseconds(60), List.of("Sweep a laser beam that damages in path.")),
+            TargetSelectors.self(),
+            (ctx, token) -> {
+                Player player = ctx.caster();
                 Location center = player.getLocation().clone();
                 World world = center.getWorld();
                 int radius = (events.hasChaosHeart(player) ? 80 : 30);
@@ -73,7 +83,6 @@ public class end_boss {
                             Location beamLoc = new Location(world, x, y, z);
                             world.spawnParticle(org.bukkit.Particle.END_ROD, beamLoc, 2, 0, 0, 0, 0.01);
 
-                            // Damage players hit by the beam
                             for (Player p : world.getPlayers()) {
                                 if (!p.equals(player)
                                         && p.getLocation().distance(center) <= radius
@@ -88,13 +97,13 @@ public class end_boss {
             }
     );
 
-    // Técnica BlackHole
     static Technique blackHole = new Technique(
             "blackhole",
             "Black Hole",
-            false,
-            cooldownHelper.secondsToMiliseconds(180),
-            (player, item, args) -> {
+            new TechniqueMeta(false, cooldownHelper.secondsToMiliseconds(180), List.of("Create a Black Hole effect.")),
+            TargetSelectors.self(),
+            (ctx, token) -> {
+                Player player = ctx.caster();
                 Location center = player.getLocation().clone().add(0, 5, 0);
                 World world = center.getWorld();
                 int blockCount = 15;
@@ -205,38 +214,45 @@ public class end_boss {
             }
     );
 
-    static Technique dimentioProj = new Technique("dimentio", "Dimensional Projectile", true, cooldownHelper.secondsToMiliseconds(30), (player, itemStack, objects) -> {
-        final double projectileDamage = 50.0; // Custom damage for each projectile
-        final String metaKey = "dimentio_thingy";
-        List<Player> players = new ArrayList<>(getClosestPlayers(player.getLocation(), 2));
-        for(Player p : players){
-            ShulkerBullet bullet = player.getWorld().spawn(player.getLocation(), ShulkerBullet.class);
-            bullet.setShooter(player);
-            bullet.setTarget(p);
+    static Technique dimentioProj = new Technique(
+        "dimentio",
+        "Dimensional Projectile",
+        new TechniqueMeta(true, cooldownHelper.secondsToMiliseconds(30), List.of("Spawn shulker bullets at closest players.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player player = ctx.caster();
+            final double projectileDamage = 50.0;
+            final String metaKey = "dimentio_thingy";
+            List<Player> players = new ArrayList<>(getClosestPlayers(player.getLocation(), 2));
+            for(Player p : players){
+                ShulkerBullet bullet = player.getWorld().spawn(player.getLocation(), ShulkerBullet.class);
+                bullet.setShooter(player);
+                bullet.setTarget(p);
 
-            bullet.setMetadata(metaKey, new FixedMetadataValue(plugin, projectileDamage));
-            // Remove levitation effect on impact (event-based, but here is a quick workaround)
-            Bukkit.getPluginManager().registerEvents(new Listener() {
-                @EventHandler
-                public void onPotionEffect(org.bukkit.event.entity.EntityPotionEffectEvent event) {
-                    if (event.getEntity() instanceof Player && event.getNewEffect() != null
-                            && event.getNewEffect().getType().equals(PotionEffectType.LEVITATION)) {
-                        event.setCancelled(true);
-                    }
-                }
-                @EventHandler
-                public void onShulkerBulletDamage(EntityDamageByEntityEvent event) {
-                    if (event.getDamager() instanceof ShulkerBullet) {
-                        ShulkerBullet bullet = (ShulkerBullet) event.getDamager();
-                        if (bullet.hasMetadata(metaKey)) {
-                            double dmg = bullet.getMetadata(metaKey).get(0).asDouble();
-                            event.setDamage(dmg);
+                bullet.setMetadata(metaKey, new FixedMetadataValue(plugin, projectileDamage));
+                Bukkit.getPluginManager().registerEvents(new Listener() {
+                    @EventHandler
+                    public void onPotionEffect(org.bukkit.event.entity.EntityPotionEffectEvent event) {
+                        if (event.getEntity() instanceof Player && event.getNewEffect() != null
+                                && event.getNewEffect().getType().equals(PotionEffectType.LEVITATION)) {
+                            event.setCancelled(true);
                         }
                     }
-                }
-            }, plugin);
+                    @EventHandler
+                    public void onShulkerBulletDamage(EntityDamageByEntityEvent event) {
+                        if (event.getDamager() instanceof ShulkerBullet) {
+                            ShulkerBullet bullet = (ShulkerBullet) event.getDamager();
+                            if (bullet.hasMetadata(metaKey)) {
+                                double dmg = bullet.getMetadata(metaKey).get(0).asDouble();
+                                event.setDamage(dmg);
+                            }
+                        }
+                    }
+                }, plugin);
+            }
         }
-    });
+    );
+
     public static List<Player> getClosestPlayers(Location location, int amount) {
         if (location == null || amount <= 0) {
             return new ArrayList<>(); // Return empty list for invalid input
