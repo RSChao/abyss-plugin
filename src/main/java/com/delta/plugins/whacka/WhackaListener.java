@@ -4,7 +4,7 @@ import com.delta.plugins.Plugin;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.items.Items;
 import com.delta.plugins.mobs.custom.Whacka_1_12_10;
-import com.rschao.plugins.techapi.tech.PlayerTechniqueManager;
+import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;

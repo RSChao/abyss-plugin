@@ -80,13 +80,6 @@
             <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\BetterModel-1.15.1-paper.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.rschao.plugins.techapi</groupId>
-            <artifactId>techapi</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\techapi-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>com.rschao.plugins.techniqueapi</groupId>
             <artifactId>TechniqueAPI</artifactId>
             <version>1.0</version>

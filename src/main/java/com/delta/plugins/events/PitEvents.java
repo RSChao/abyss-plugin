@@ -8,8 +8,12 @@ import com.delta.plugins.mobs.custom.Whacka_1_12_10;
 import com.delta.plugins.whacka.WhackaManager;
 import com.rschao.api.audio.AudioSelector;
 import com.rschao.events.definitions.PlayerPopHeartEvent;
-import com.rschao.plugins.techapi.tech.PlayerTechniqueManager;
-import com.rschao.plugins.techapi.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
+import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
+import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
+import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+import com.rschao.smp.commands.item;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -413,7 +417,7 @@ public class PitEvents implements Listener {
         if(ev.getItem().isSimilar(PitItems.floor_key)){
             if(ev.getClickedBlock() == null) return;
             if(getFloor(ev.getPlayer()) <= 0 || getFloor(ev.getPlayer()) >= 100) return;
-            nextFloorTech.use(ev.getPlayer(), ev.getItem(), null);
+            nextFloorTech.use(new TechniqueContext(ev.getPlayer(), ev.getItem()));
         }
         else if (item.getType().equals(Material.TRIAL_KEY)){
             if(item.getItemMeta().getLore().isEmpty()) return;
@@ -645,8 +649,9 @@ public class PitEvents implements Listener {
         // tope por kill para evitar drops explosivos
         return Math.min(coins, 8);
     }
-    static Technique nextFloorTech = new Technique("pit_next_floor", "Next Floor", false, 5000, (player, item, args) -> {
-        Player p = player;
+    static Technique nextFloorTech = new Technique("pit_next_floor", "Next Floor", new TechniqueMeta(false, 5000, List.of()), TargetSelectors.self(), (ctx, token) -> {
+        Player p = ctx.caster();
+        ItemStack item = ctx.sourceItem();
         p.sendMessage("Has usado una llave para abrir la puerta.");
         // consumir 1 del item en la mano
         item.setAmount(item.getAmount()-1);

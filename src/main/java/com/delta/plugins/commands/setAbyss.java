@@ -1,7 +1,7 @@
 package com.delta.plugins.commands;
 
-import com.rschao.plugins.techapi.tech.Technique;
-import com.rschao.plugins.techapi.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument.OnePlayer;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -48,7 +48,7 @@ public class setAbyss {
                 }
                 player.sendMessage("Techniques for abyss id '" + id + "':");
                 for(Technique tech : techs){
-                    player.sendMessage("- " + tech.getName());
+                    player.sendMessage("- " + tech.getDisplayName());
                 }
             });
 

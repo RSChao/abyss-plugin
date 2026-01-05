@@ -1,8 +1,7 @@
 package com.delta.plugins.commands;
 
 import com.delta.plugins.items.Items;
-import com.delta.plugins.techs.roaring_soul;
-import com.rschao.plugins.techapi.tech.feedback.hotbarMessage;
+import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
