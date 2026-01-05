@@ -1,0 +1,19 @@
+name: deltaplugin
+main: com.delta.plugins.Plugin
+version: 1.0
+api-version: 1.21
+authors:
+  - RSChao
+contributors:
+  - D3lta7
+
+depend:
+  - CommandAPI
+  - UltimateAdvancementAPI
+  - BetterModel
+softdepend:
+  - ShowdownSMP
+  - bossfight
+  - fightingplusplus
+  - techapi
+  - TechniqueAPI
