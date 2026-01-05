@@ -52,7 +52,7 @@ public class masterOfHearts {
     static Technique heartCannon = new Technique(
         "heartcannon",
         "Heart cannon",
-        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(3), List.of("Ritual visual y daño frontal.")),
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(3), List.of("Daña a jugadores en el punto de mira del usuario.")),
         TargetSelectors.self(),
         (ctx, token) -> {
             Player player = ctx.caster();
