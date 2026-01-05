@@ -6,11 +6,18 @@ import com.delta.plugins.techs.Necrozma;
 import com.delta.plugins.techs.chaosWielder;
 import com.delta.plugins.techs.offspring;
 import com.delta.plugins.techs.poet;
-import com.rschao.plugins.techapi.tech.PlayerTechniqueManager;
-import com.rschao.plugins.techapi.tech.Technique;
-import com.rschao.plugins.techapi.tech.cooldown.cooldownHelper;
-import com.rschao.plugins.techapi.tech.feedback.hotbarMessage;
-import com.rschao.plugins.techapi.tech.register.TechRegistry;
+import com.rschao.plugins.fightingpp.techs.fly;
+import com.rschao.plugins.techniqueAPI.TechAPI;
+import com.rschao.plugins.techniqueAPI.event.TechniqueReadDescriptionEvent;
+import com.rschao.plugins.techniqueAPI.tech.Technique;
+import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
+import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
+import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
+import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
+import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -65,14 +72,15 @@ public class events implements Listener {
 
     @EventHandler
     void onPlayerUseHoe(PlayerInteractEvent ev){
-        ItemStack item = ev.getItem();
-        if(item == null) return;
-        if(item.getType().equals(Material.AIR)) return;
-        if(!item.isSimilar(Items.hoe())) return;
-        if(!ev.getPlayer().isSneaking()) return;
         Player p = ev.getPlayer();
-        fly.use(p, item, Technique.nullValue());
+        if(ev.getItem() == null) return;
+        if(ev.getItem().getType().equals(Material.AIR)) return;
+        if(!ev.getItem().isSimilar(Items.hoe())) return;
+        if(!ev.getPlayer().isSneaking()) return;
+        Player p2 = ev.getPlayer();
+        fly.use(new TechniqueContext(p2, ev.getItem()));
     }
+
     @EventHandler
     void onPlayerUseTech(PlayerInteractEvent ev){
         Player p = ev.getPlayer();
@@ -145,7 +153,7 @@ public class events implements Listener {
             else{
                 Technique technique = TechRegistry.getAllTechniques(groupId).get(techIndex);
                 if(technique == null) return;
-                technique.use(p, ev.getItem(), Technique.nullValue());
+                technique.use(new TechniqueContext(p, ev.getItem()));
             }
         }
         else if(ev.getAction().toString().contains("RIGHT")){
@@ -162,7 +170,7 @@ public class events implements Listener {
                 PlayerTechniqueManager.setCurrentTechnique(p.getUniqueId(), groupId, (techIndex + 1) % (hasChaosHeart(p)? TechRegistry.getAllTechniques(groupId).size() : TechRegistry.getNormalTechniques(groupId).size()));
                 techIndex = PlayerTechniqueManager.getCurrentTechnique(p.getUniqueId(), groupId);
             }
-            p.sendMessage("You have switched to technique: " + TechRegistry.getAllTechniques(groupId).get(techIndex).getName());
+            p.sendMessage("You have switched to technique: " + TechRegistry.getAllTechniques(groupId).get(techIndex).getDisplayName());
         }
     }
 
@@ -279,7 +287,7 @@ public class events implements Listener {
             return;
         }
         groupId = groupId.replace("_", " ");
-        String techName = techs.get(techIndex).getName();
+        String techName = techs.get(techIndex).getDisplayName();
         hotbarMessage.sendHotbarMessage(player, "Technique: " + techName + " (Abyss " + groupId + ")");
     }
     /*@EventHandler
@@ -364,17 +372,21 @@ public class events implements Listener {
         return (com.rschao.events.soulEvents.GetSoulN(p) == 66 || com.rschao.events.soulEvents.GetSecondSoulN(p) == 66);
     }
 
-    static Technique fly = new Technique("fly", "Fly", false, cooldownHelper.secondsToMiliseconds(30), ((player, itemStack, objects) -> {
-        player.setInvisible(true);
-        player.setAllowFlight(true);
-        player.setFlying(true);
-        Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () ->{
-            player.setInvisible(false);
-            player.setFlying(false);
-            player.setAllowFlight(false);
-        }, 60);
-    }));
 
+
+    static Technique fly = new Technique("fly", "Fly", new TechniqueMeta(false, cooldownHelper.secondsToMiliseconds(30), List.of("Grants temporary flight.")), TargetSelectors.self(), (ctx, token) -> {
+        Player p = ctx.caster();
+        p.setInvisible(true);
+        p.setAllowFlight(true);
+        p.setFlying(true);
+        p.sendMessage(ChatColor.AQUA + "You can now fly for 30 seconds!");
+        Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> {
+            p.setFlying(false);
+            p.setInvisible(false);
+            p.setAllowFlight(false);
+            p.sendMessage(ChatColor.AQUA + "Your flight has ended.");
+        }, 30 * 20L);
+    });
     @EventHandler
     void onPlayerJoin(PlayerJoinEvent ev){
         Player p = ev.getPlayer();
@@ -392,150 +404,196 @@ public class events implements Listener {
         if(color == null) return;
         switch (color) {
             case "red":
-                handleRed.use(p, item, Technique.nullValue());
+                handleRed.use(new TechniqueContext(p, item));
             case "orange":
-                handleOrange.use(p, item, Technique.nullValue());
+                handleOrange.use(new TechniqueContext(p, item));
                 break;
             case "yellow":
-                handleYellow.use(p, item, Technique.nullValue());
+                handleYellow.use(new TechniqueContext(p, item));
                 break;
             case "green":
-                handleGreen.use(p, item, Technique.nullValue());
+                handleGreen.use(new TechniqueContext(p, item));
                 break;
             case "blue":
-                handleBlue.use(p, item, Technique.nullValue());
+                handleBlue.use(new TechniqueContext(p, item));
                 break;
             case "indigo":
-                handleIndigo.use(p, item, Technique.nullValue());
+                handleIndigo.use(new TechniqueContext(p, item));
                 break;
             case "purple":
-                handlePurple.use(p, item, Technique.nullValue());
+                handlePurple.use(new TechniqueContext(p, item));
                 break;
             case "white":
-                handleWhite.use(p, item, Technique.nullValue());
+                handleWhite.use(new TechniqueContext(p, item));
                 break;
-        }
-
+        };
     }
 
-    static Technique handleRed = new Technique("handleRed", "Handle Red", false, cooldownHelper.minutesToMiliseconds(1), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            p.setHealth(Math.min(p.getHealth() + 6, p.getMaxHealth()));
-            p.sendMessage(ChatColor.RED + "You have used the Red Pure Heart to heal 3 hearts!");
+    static Technique handleRed = new Technique(
+        "handleRed",
+        "Handle Red",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(1), List.of("Heal or grant fire resistance.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                p.setHealth(Math.min(p.getHealth() + 6, p.getMaxHealth()));
+                p.sendMessage(ChatColor.RED + "You have used the Red Pure Heart to heal 3 hearts!");
+            }
+            else{
+                p.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(30*20, 0));
+                p.sendMessage(ChatColor.RED + "You have used the Red Pure Heart to gain Fire Resistance!");
+            }
         }
-        else{
-            p.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(30*20, 0));
-            p.sendMessage(ChatColor.RED + "You have used the Red Pure Heart to gain Fire Resistance!");
-        }
-    }));
+    );
 
-    static Technique handleOrange = new Technique("handleOrange", "Handle Orange", false, cooldownHelper.minutesToMiliseconds(4), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            for (ItemStack item : p.getInventory().getArmorContents()) {
-                if (item != null && item.getItemMeta() instanceof Damageable && item.getDurability() < item.getType().getMaxDurability()) {
-                    Damageable meta = (Damageable) item.getItemMeta();
-                    meta.setDamage(0); // Set durability to maximum
-                    item.setItemMeta(meta);
+    static Technique handleOrange = new Technique(
+        "handleOrange",
+        "Handle Orange",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(4), List.of("Repair armor or grant strength.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                for (ItemStack item : p.getInventory().getArmorContents()) {
+                    if (item != null && item.getItemMeta() instanceof Damageable && item.getDurability() < item.getType().getMaxDurability()) {
+                        Damageable meta = (Damageable) item.getItemMeta();
+                        meta.setDamage(0); // Set durability to maximum
+                        item.setItemMeta(meta);
+                    }
+                }
+                p.sendMessage(ChatColor.RED + "You have used the Orange Pure Heart to repair your armor!");
+            }
+            else{
+                p.addPotionEffect(PotionEffectType.STRENGTH.createEffect(60*20, 1));
+                p.sendMessage(ChatColor.RED + "You have used the Orange Pure Heart to gain Strength II for 60 seconds!");
+            }
+        }
+    );
+
+    static Technique handleYellow = new Technique(
+        "handleYellow",
+        "Handle Yellow",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(2), List.of("Night vision or absorption.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                p.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(60*5*20, 1));
+                p.sendMessage(ChatColor.RED + "You have used the Yellow Pure Heart to gain Night Vision for 5 minutes!");
+            }
+            else{
+                p.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(30*20, 3));
+                p.sendMessage(ChatColor.RED + "You have used the Yellow Pure Heart to gain Absorption IV for 30 seconds!");
+            }
+        }
+    );
+
+    static Technique handleGreen = new Technique(
+        "handleGreen",
+        "Handle Green",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(4), List.of("Regenerate allies or cleanse.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                for (Player pl : p.getNearbyEntities(5, 5, 5).stream().filter(e -> e instanceof Player).map(e -> (Player) e).toList()) {
+                    pl.addPotionEffect(PotionEffectType.REGENERATION.createEffect(15*20, 2));
+                }
+                p.sendMessage(ChatColor.RED + "You have used the Green Pure Heart to give nearby players Regeneration III for 15 seconds!");
+            }
+            else{
+                for(PotionEffect effect : p.getActivePotionEffects()){
+                    if(effect.getType().getCategory().name().contains("HARMFUL")){
+                        p.removePotionEffect(effect.getType());
+                        p.sendMessage(ChatColor.RED + "You have used the Green Pure Heart to remove all harmful effects!");
+                    }
                 }
             }
-            p.sendMessage(ChatColor.RED + "You have used the Orange Pure Heart to repair your armor!");
         }
-        else{
-            p.addPotionEffect(PotionEffectType.STRENGTH.createEffect(60*20, 1));
-            p.sendMessage(ChatColor.RED + "You have used the Orange Pure Heart to gain Strength II for 60 seconds!");
-        }
-    }));
+    );
 
-    static Technique handleYellow = new Technique("handleYellow", "Handle Yellow", false, cooldownHelper.minutesToMiliseconds(2), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            p.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(60*5*20, 1));
-            p.sendMessage(ChatColor.RED + "You have used the Yellow Pure Heart to gain Night Vision for 5 minutes!");
-        }
-        else{
-            p.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(30*20, 3));
-            p.sendMessage(ChatColor.RED + "You have used the Yellow Pure Heart to gain Absorption IV for 30 seconds!");
-        }
-    }));
-
-    static Technique handleGreen = new Technique("handleGreen", "Handle Green", false, cooldownHelper.minutesToMiliseconds(4), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            for (Player pl : p.getNearbyEntities(5, 5, 5).stream().filter(e -> e instanceof Player).map(e -> (Player) e).toList()) {
-                pl.addPotionEffect(PotionEffectType.REGENERATION.createEffect(15*20, 2));
-
+    static Technique handleBlue = new Technique(
+        "handleBlue",
+        "Handle Blue",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(3), List.of("Clear weather or grant resistance.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                p.getWorld().setClearWeatherDuration(3600*20);
+                p.sendMessage(ChatColor.RED + "You have used the Blue Pure Heart to clear the weather!");
             }
-            p.sendMessage(ChatColor.RED + "You have used the Green Pure Heart to give nearby players Regeneration III for 15 seconds!");
+            else{
+                p.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(10*20, 1));
+                p.sendMessage(ChatColor.RED + "You have used the Blue Pure Heart to gain Resistance II for 10 seconds!");
+            }
         }
-        else{
-            for(PotionEffect effect : p.getActivePotionEffects()){
-                if(effect.getType().getCategory().name().contains("HARMFUL")){
+    );
+
+    static Technique handleIndigo = new Technique(
+        "handleIndigo",
+        "Handle Indigo",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(2), List.of("Teleport to spawn or grant speed.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                Location loc = (p.getBedLocation() != null) ? p.getBedLocation() : p.getWorld().getSpawnLocation();
+                p.teleport(loc);
+                p.sendMessage(ChatColor.RED + "You have used the Indigo Pure Heart to teleport to your spawn point!");
+            }
+            else{
+                p.addPotionEffect(PotionEffectType.SPEED.createEffect(30*20, 2));
+                p.sendMessage(ChatColor.RED + "You have used the Indigo Pure Heart to gain Speed III for 30 seconds!");
+            }
+        }
+    );
+
+    static Technique handlePurple = new Technique(
+        "handlePurple",
+        "Handle Purple",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(5), List.of("Give glowing to entities or weakness to players.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                for (Entity e : p.getNearbyEntities(5, 5, 5)) {
+                    if(e instanceof LivingEntity le && !le.equals(p)) {
+                        le.addPotionEffect(PotionEffectType.GLOWING.createEffect(30*20, 2));
+                    }
+                }
+                p.sendMessage(ChatColor.RED + "You have used the Purple Pure Heart to give nearby entities Glowing III for 30 seconds!");
+            }
+            else{
+                for (Player pl : p.getNearbyEntities(5, 5, 5).stream().filter(e -> e instanceof Player).filter(e -> !e.equals(p)).map(e -> (Player) e).toList()) {
+                    pl.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(5*20, 1));
+                }
+                p.sendMessage(ChatColor.RED + "You have used the Purple Pure Heart to give nearby players Weakness II for 5 seconds!");
+            }
+        }
+    );
+
+    static Technique handleWhite = new Technique(
+        "handleWhite",
+        "Handle White",
+        new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(10), List.of("Satiate or cleanse all effects.")),
+        TargetSelectors.self(),
+        (ctx, token) -> {
+            Player p = ctx.caster();
+            if(p.isSneaking()){
+                p.setFoodLevel(20);
+                p.setSaturation(20);
+                p.sendMessage(ChatColor.RED + "You have used the White Pure Heart to fully satiate yourself!");
+            }
+            else{
+                for(PotionEffect effect : p.getActivePotionEffects()){
                     p.removePotionEffect(effect.getType());
-                    p.sendMessage(ChatColor.RED + "You have used the Green Pure Heart to remove all harmful effects!");
                 }
+                p.sendMessage(ChatColor.RED + "You have used the White Pure Heart to remove all effects!");
             }
         }
-    }));
-
-    static Technique handleBlue = new Technique("handleBlue", "Handle Blue", false, cooldownHelper.minutesToMiliseconds(3), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            p.getWorld().setClearWeatherDuration(3600*20);
-            p.sendMessage(ChatColor.RED + "You have used the Blue Pure Heart to clear the weather!");
-        }
-        else{
-            p.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(10*20, 1));
-            p.sendMessage(ChatColor.RED + "You have used the Blue Pure Heart to gain Resistance II for 10 seconds!");
-        }
-    }));
-
-    static Technique handleIndigo = new Technique("handleIndigo", "Handle Indigo", false, cooldownHelper.minutesToMiliseconds(2), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            Location loc = (p.getBedLocation() != null) ? p.getBedLocation() : p.getWorld().getSpawnLocation();
-            p.teleport(loc);
-            p.sendMessage(ChatColor.RED + "You have used the Indigo Pure Heart to teleport to your spawn point!");
-        }
-        else{
-            p.addPotionEffect(PotionEffectType.SPEED.createEffect(30*20, 2));
-            p.sendMessage(ChatColor.RED + "You have used the Indigo Pure Heart to gain Speed III for 30 seconds!");
-        }
-    }));
-
-    static Technique handlePurple = new Technique("handlePurple", "Handle Purple", false, cooldownHelper.minutesToMiliseconds(5), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            for (Entity e : p.getNearbyEntities(5, 5, 5)) {
-                if(e instanceof LivingEntity le && !le.equals(p)) {
-                    le.addPotionEffect(PotionEffectType.GLOWING.createEffect(30*20, 2));
-                }
-            }
-            p.sendMessage(ChatColor.RED + "You have used the Purple Pure Heart to give nearby entities Glowing III for 30 seconds!");
-        }
-        else{
-            for (Player pl : p.getNearbyEntities(5, 5, 5).stream().filter(e -> e instanceof Player).filter(e -> !e.equals(p)).map(e -> (Player) e).toList()) {
-                pl.addPotionEffect(PotionEffectType.WEAKNESS.createEffect(5*20, 1));
-            }
-            p.sendMessage(ChatColor.RED + "You have used the Purple Pure Heart to give nearby players Weakness II for 5 seconds!");
-        }
-    }));
-
-    static Technique handleWhite = new Technique("handleWhite", "Handle White", false, cooldownHelper.minutesToMiliseconds(10), ((player, itemStack, objects) -> {
-        Player p = player;
-        if(p.isSneaking()){
-            p.setFoodLevel(20);
-            p.setSaturation(20);
-            p.sendMessage(ChatColor.RED + "You have used the White Pure Heart to fully satiate yourself!");
-        }
-        else{
-            for(PotionEffect effect : p.getActivePotionEffects()){
-                p.removePotionEffect(effect.getType());
-            }
-            p.sendMessage(ChatColor.RED + "You have used the White Pure Heart to remove all effects!");
-        }
-    }));
+    );
 
     @EventHandler
     void onFrameRotate(PlayerInteractEntityEvent e){

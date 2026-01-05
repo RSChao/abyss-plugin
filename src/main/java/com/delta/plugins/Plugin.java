@@ -59,7 +59,7 @@ public class Plugin extends JavaPlugin implements Listener
          DarkWorldRegistry.InitItems();
          initCommands();
          // Initialize techniques
-         //initTechniques();
+         initTechniques();
          // Register events
          initEvents();
      }
