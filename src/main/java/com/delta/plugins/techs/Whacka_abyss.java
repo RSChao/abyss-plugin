@@ -78,6 +78,9 @@ public class Whacka_abyss {
                         w.setHealth(300.0);
                         player.sendMessage("§6¡Has invocado a " + name + ", un Guaka legendario! §c(300 HP)");
                     }
+                    else {
+                        player.sendMessage("Has invocado a " + name + " el Guaka");
+                    }
                     WhackaManager.setBumpDrop(w);
                 }, i); // small delay between spawns
             }
