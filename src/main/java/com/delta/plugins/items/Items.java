@@ -189,6 +189,24 @@ public class Items {
         return item;
     }
 
+    public static ItemStack voidBump() {
+        ItemStack item = new ItemStack(Material.COOKIE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.AQUA + "Chichón de Guaka de Vacío");
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(Plugin.getPlugin(Plugin.class), "void_whacka_bump"),
+                org.bukkit.persistence.PersistentDataType.BOOLEAN, true
+        );
+        meta.setItemModel(NamespacedKey.minecraft("whacka_bump_void"));
+        FoodComponent food = meta.getFood();
+        food.setCanAlwaysEat(true);
+        food.setNutrition(12);
+        food.setSaturation(15);
+        meta.setFood(food);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     public static ItemStack rareWhackaBump() {
         ItemStack item = new ItemStack(Material.COOKIE);
         ItemMeta meta = item.getItemMeta();

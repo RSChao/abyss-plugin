@@ -148,6 +148,14 @@ public class WhackaListener implements Listener {
                     PlayerTechniqueManager.setInmune(player.getUniqueId(), true, 60);
                     player.sendMessage("§6You feel a divine protection surround you!");
                 }, 1L);
+            }else if (item.getItemMeta().getPersistentDataContainer().has(
+                    Items.voidBump().getItemMeta().getPersistentDataContainer().getKeys().iterator().next(),
+                    org.bukkit.persistence.PersistentDataType.BOOLEAN)) {
+                // Void Bump
+                Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("deltaplugin"), () -> {
+                    //TODO: Add void effect
+                    player.sendMessage("§5You feel the void's embrace...");
+                }, 1L);
             }
         }
     }
