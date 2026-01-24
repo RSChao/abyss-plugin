@@ -215,6 +215,7 @@ public class Plugin extends JavaPlugin implements Listener
       StartTower.addMobSpot.register();
       StartTower.setTowerSpawn.register();
       StartTower.saveCheckpoint.register();
+      StartTower.loadCheckpoint.register();
       StartTower.giveExtraKey.register();
       givePureHeart.registerMaps();
       givePureHeart.invert.register();

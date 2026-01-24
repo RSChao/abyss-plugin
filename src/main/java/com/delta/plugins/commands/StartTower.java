@@ -24,6 +24,7 @@ import java.util.List;
 public class StartTower {
     public static CommandAPICommand command = new CommandAPICommand("starttower")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .withOptionalArguments(new IntegerArgument("floor"), new StringArgument("inv"))
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
@@ -68,6 +69,7 @@ public class StartTower {
             });
     public static CommandAPICommand nextFloor = new CommandAPICommand("nextfloor")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .withOptionalArguments(new IntegerArgument("amount"))
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
@@ -93,20 +95,16 @@ public class StartTower {
             });
     public static CommandAPICommand resetfloor = new CommandAPICommand("resetfloor")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
                 PitEvents.resetFloor(p);
-            });
-    public static CommandAPICommand setHost = new CommandAPICommand("sethost")
-            .withArguments(new OnePlayer("player"))
-            .executes((sender, args) -> {
-                Player p = (Player) args.get(0);
-                PitEvents.setHost(p);
             });
 
     // Nuevo comando: settowerspawn <floor> -> guarda la ubicación del ejecutor como tower.<floor>.spawn
     public static CommandAPICommand setTowerSpawn = new CommandAPICommand("settowerspawn")
             .withArguments(new IntegerArgument("floor"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 if(!(sender instanceof Player)) return;
                 Player p = (Player) sender;
@@ -127,6 +125,7 @@ public class StartTower {
     // Nuevo comando: addmobspot <floor> -> añade la ubicación del ejecutor a tower.<floor>.mobs
     public static CommandAPICommand addMobSpot = new CommandAPICommand("addmobspot")
             .withArguments(new IntegerArgument("floor"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 if(!(sender instanceof Player)) return;
                 Player p = (Player) sender;
@@ -150,6 +149,7 @@ public class StartTower {
     // Comando para guardar checkpoint del jugador (inventario + piso)
     public static CommandAPICommand saveCheckpoint = new CommandAPICommand("savetower")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
                 // guardar inventario con la clave tower.checkpoint.<player>
@@ -174,6 +174,7 @@ public class StartTower {
     // Comando para cargar checkpoint: inicia la torre en el piso guardado y carga inventario guardado
     public static CommandAPICommand loadCheckpoint = new CommandAPICommand("loadtowercheckpoint")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
 
@@ -209,6 +210,7 @@ public class StartTower {
     // Nuevo comando: /giveextrakey <player>
     public static CommandAPICommand giveExtraKey = new CommandAPICommand("giveextrakey")
             .withArguments(new OnePlayer("player"))
+            .withPermission("tower.admin")
             .executes((sender, args) -> {
                 Player target = (Player) args.get(0);
                 if(target == null) return;
