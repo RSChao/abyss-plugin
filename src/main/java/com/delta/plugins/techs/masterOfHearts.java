@@ -731,7 +731,7 @@ public class masterOfHearts {
 
     // Nueva técnica ultimate
     static Technique ultimateTechnique = new Technique(
-        "ultimate_cataclysm",
+        ULT_ID,
         "Heart Atomization",
         new TechniqueMeta(true, cooldownHelper.hour*2, List.of("Ultimate multi-fase con anillos y esfera.")),
         TargetSelectors.self(),

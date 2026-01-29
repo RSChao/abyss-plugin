@@ -13,7 +13,6 @@ import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
-import com.rschao.smp.commands.item;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -6,9 +6,8 @@ import com.delta.plugins.techs.Necrozma;
 import com.delta.plugins.techs.chaosWielder;
 import com.delta.plugins.techs.offspring;
 import com.delta.plugins.techs.poet;
-import com.rschao.plugins.fightingpp.techs.fly;
-import com.rschao.plugins.techniqueAPI.TechAPI;
-import com.rschao.plugins.techniqueAPI.event.TechniqueReadDescriptionEvent;
+import com.rschao.plugins.showdowncore.showdownCore.api.runnables.ShowdownScript;
+import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
@@ -337,7 +336,9 @@ public class events implements Listener {
         if (victimGroups.size() == 1) {
             return;
         }
-        if(com.rschao.smp.Plugin.getPauseLives()) return;
+        ShowdownScript<Boolean> scr = (ShowdownScript<Boolean>) ScriptRegistry.getScript("smp_get_pause_lives");
+        boolean b = scr.run();
+        if(b) return;
 
         // Buscar el siguiente abismo robable (no protegido)
         String stolenGroup = victimGroups.stream().filter(candidate -> !protectedAbysses.contains(candidate)).findFirst().orElse(null);
