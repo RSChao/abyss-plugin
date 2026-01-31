@@ -187,6 +187,9 @@ public class Plugin extends JavaPlugin implements Listener
       Necrozma.registerTechs();
       MasterOfTrials.register();
       Whacka_abyss.register();
+      OriginDepleter.register();
+      OriginEngine.register();
+      OriginAider.register();
   }
 
   static void initCommands(){
@@ -228,6 +231,7 @@ public class Plugin extends JavaPlugin implements Listener
       getServer().getPluginManager().registerEvents(new com.delta.plugins.events.events(), this);
       getServer().getPluginManager().registerEvents(new com.delta.plugins.events.BossEvents(), this);
       getServer().getPluginManager().registerEvents(new com.delta.plugins.darkworld.DarkWorldEvents(), this);
+      getServer().getPluginManager().registerEvents(new com.delta.plugins.events.techEvents.DestinyBondEvents(), this);
       Bukkit.getScheduler().scheduleSyncDelayedTask(this, DarkWorldEvents::runDarkWorldParticles); // 20 ticks = 1-second delay
       Bukkit.getScheduler().scheduleSyncDelayedTask(this, () ->{
           getServer().getPluginManager().registerEvents(new DeltaGraveEvent(), this);

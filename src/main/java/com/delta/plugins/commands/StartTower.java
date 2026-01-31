@@ -51,7 +51,7 @@ public class StartTower {
                 Location location = configured != null ? configured : p.getLocation();
 
                 // backup del inventario actual
-                InvManager.SaveInventory(p, "tower.backup." + p.getUniqueId(),  false);
+                InvManager.SaveInventory(p, "tower.backup." + p.getUniqueId());
 
                 // teleport y efectos
                 p.teleport(location);
@@ -60,9 +60,9 @@ public class StartTower {
 
                 // cargar inventario: si se pasó una clave usarla, si no usar "tower" por compatibilidad
                 if(invKey != null && !invKey.isEmpty()){
-                    InvManager.LoadInventory(p, invKey, false);
+                    InvManager.LoadInventory(p, invKey);
                 } else {
-                    InvManager.LoadInventory(p, "tower", false);
+                    InvManager.LoadInventory(p, "tower");
                 }
 
                 Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class),() -> (new MobSpawner()).spawnMob(p.getWorld(), p), 2);
@@ -153,7 +153,7 @@ public class StartTower {
             .executes((sender, args) -> {
                 Player p = (Player) args.get(0);
                 // guardar inventario con la clave tower.checkpoint.<player>
-                InvManager.SaveInventory(p, "tower.checkpoint." + p.getName(), false);
+                InvManager.SaveInventory(p, "tower.checkpoint." + p.getName());
 
                 // guardar piso en towerdata.yml con la misma clave
                 File file = new File(Plugin.getPlugin(Plugin.class).getDataFolder(), "towerdata.yml");
@@ -192,7 +192,7 @@ public class StartTower {
 
                 int savedFloor = config.getInt(key, 0);
                 // cargar inventario guardado
-                InvManager.LoadInventory(p, "tower.checkpoint." + p.getName(), false);
+                InvManager.LoadInventory(p, "tower.checkpoint." + p.getName());
 
                 // iniciar pit y colocar al jugador en el piso guardado
                 PitEvents.startPit(p);

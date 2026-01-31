@@ -49,7 +49,7 @@ public class MasterOfTrials {
             player.sendMessage("Summoning floor " + xp + "!");
 
             Location location = player.getTargetBlockExact(100).getLocation().add(0.5, 0.1, 0.5);
-            if(location == null){
+            if(location.distance(player.getLocation()) > 100){
                 player.sendMessage("§c[DeltaTech] §7Defaulting to player location.");
                 location = player.getLocation();
             }

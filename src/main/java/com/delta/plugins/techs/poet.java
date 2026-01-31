@@ -293,15 +293,15 @@ public class poet {
             new BukkitRunnable(){
                 @Override
                 public void run() {
-                    events.hasOmniNegate.put(player.getUniqueId(), false);
-                }
-            }.runTaskLater(plugin, 40);
-            new BukkitRunnable(){
-                @Override
-                public void run() {
                     events.hasOmniNegate.put(player.getUniqueId(), true);
                 }
             }.runTaskLater(plugin, 10);
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    events.hasOmniNegate.put(player.getUniqueId(), false);
+                }
+            }.runTaskLater(plugin, 40);
             hotbarMessage.sendHotbarMessage(player, "&5&lOmni Negate Activated!");
         }
     );
