@@ -179,9 +179,9 @@ public class Plugin extends JavaPlugin implements Listener
       devourer.register();
       Redeemed.register();
       clowns.register();
+      chaosWielder.register();
       sword_college.register();
       lynk.register();
-      chaosWielder.register();
       Familiar_love.register();
       QuestionmarkAbyss.registerTech();
       Necrozma.registerTechs();
