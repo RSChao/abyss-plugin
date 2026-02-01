@@ -48,6 +48,14 @@ public class OriginDepleter {
         TechRegistry.registerTechnique(TECH_ID, slashes);
         Bukkit.getPluginManager().registerEvents(new UltimateListener(), plugin);
     }
+    private static boolean registeredP4Techs = false;
+    public static void addP4Techs(){
+        if(registeredP4Techs) return;
+        TechRegistry.registerTechnique(TECH_ID, present);
+        TechRegistry.registerTechnique(TECH_ID, ultimateTechnique);
+        TechRegistry.registerTechnique(TECH_ID, chaos);
+        registeredP4Techs = true;
+    }
 
     static Technique breath = new Technique("breath", "Oblivions breath", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(10), List.of("Heals and gives Origin 1 extra pop.")), TargetSelectors.self(), (ctx, token) ->{
         for(Player p : Bukkit.getOnlinePlayers()){
