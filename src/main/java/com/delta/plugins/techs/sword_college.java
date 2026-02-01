@@ -96,13 +96,7 @@ public class sword_college {
     "reset_cooldown_delta",
     "Floritures go brrr",
     new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(30), List.of("Remove all cooldowns.")),
-    TargetSelectors.self(),
-    (ctx, token) -> {
-        Player player = ctx.caster();
-        CooldownManager.removeAllCooldowns(player);
-        CooldownManager.setCooldown(player, "reset_cooldown_delta", cooldownHelper.minutesToMiliseconds(30));
-        hotbarMessage.sendHotbarMessage(player, "¡Has reiniciado tus cooldowns!");
-    });
+    TargetSelectors.self(), TechRegistry.getById("reset_cooldown_chaos").getAction());
 
     // zippit: proxy a la acción de otra técnica
     static Technique zippit = new Technique(

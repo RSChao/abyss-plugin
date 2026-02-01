@@ -92,28 +92,7 @@ public class Whacka_abyss {
         "reset_cooldown_whacka",
         "Reinicio de Guaka",
         new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(50), List.of("Reset many abyss & fruit cooldowns.")),
-        TargetSelectors.self(),
-        (ctx, token) -> {
-            Player player = ctx.caster();
-            CooldownManager.setCooldown(player, "reset_cooldown", cooldownHelper.minutesToMiliseconds(50));
-            List<String> excludedTechs = List.of("ultimate_cataclysm", "reset_cooldown_chaos", "reset_cooldown_whacka", "reset_cooldown");
-            for(String id: Plugin.getAllAbyssIDs()){
-                for(Technique t: TechRegistry.getAllTechniques(id)){
-                    if(!excludedTechs.contains(t.getId())){
-                        CooldownManager.removeCooldown(player, t.getId());
-                    }
-                }
-            }
-            for(String id: com.rschao.plugins.fightingpp.Plugin.getAllFruitIDs()){
-                for(Technique t: TechRegistry.getAllTechniques(id)){
-                    if(!excludedTechs.contains(t.getId())){
-                        CooldownManager.removeCooldown(player, t.getId());
-                    }
-                }
-            }
-            subtractHealthWhacka(player);
-            hotbarMessage.sendHotbarMessage(player, "¡Has reiniciado tus cooldowns!");
-        }
+        TargetSelectors.self(), TechRegistry.getById("reset_cooldown_chaos").getAction()
     );
 
     // Nueva técnica: Guakataque (incredibleviolence)

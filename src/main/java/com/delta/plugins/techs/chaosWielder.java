@@ -352,16 +352,8 @@ public class chaosWielder {
         TargetSelectors.self(),
         (ctx, token) -> {
             Player player = ctx.caster();
-            CooldownManager.setCooldown(player, "reset_cooldown", cooldownHelper.minutesToMiliseconds(50));
-            List<String> excludedTechs = List.of("ultimate_cataclysm", "reset_cooldown_chaos", "reset_cooldown_whacka", "reset_cooldown");
-            for(String id: Plugin.getAllAbyssIDs()){
-                for(Technique t: TechRegistry.getAllTechniques(id)){
-                    if(!excludedTechs.contains(t.getId())){
-                        CooldownManager.removeCooldown(player, t.getId());
-                    }
-                }
-            }
-            for(String id: com.rschao.plugins.fightingpp.Plugin.getAllFruitIDs()){
+            List<String> excludedTechs = List.of("ultimate_cataclysm", "reset_cooldown_chaos", "reset_cooldown_whacka", "reset_cooldown", "oblivion_atomization", "reset_cooldown_delta");
+            for(String id: TechRegistry.getRegisteredFruitIds()){
                 for(Technique t: TechRegistry.getAllTechniques(id)){
                     if(!excludedTechs.contains(t.getId())){
                         CooldownManager.removeCooldown(player, t.getId());
