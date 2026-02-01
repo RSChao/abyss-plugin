@@ -13,6 +13,10 @@ import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+import kr.toxicity.model.api.BetterModel;
+import kr.toxicity.model.api.bukkit.platform.BukkitAdapter;
+import kr.toxicity.model.api.profile.ModelProfile;
+import kr.toxicity.model.api.tracker.DummyTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -271,6 +275,13 @@ public class PitEvents implements Listener {
             Player p = ev.getPlayer();
             p.getInventory().addItem(PitItems.key_hole);
             p.sendMessage("Has recibido un agujero para llave.");
+            ev.setCancelled(true);
+        }
+        else if(ev.getMessage().equals("!testlimb") && !Plugin.getMiawzVer()){
+            Player p = ev.getPlayer();
+            DummyTracker tracker = BetterModel.limb("testlimb")
+                    .map(r -> r.create(BukkitAdapter.adapt(p.getPlayer().getLocation()), ModelProfile.of(BukkitAdapter.adapt(p)))) //Creates some dummy tracker to this location and player's skin profile.
+                    .orElse(null);
             ev.setCancelled(true);
         }
         else if(ev.getMessage().equals("!key") && !Plugin.getMiawzVer()){

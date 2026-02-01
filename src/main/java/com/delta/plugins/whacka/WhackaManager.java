@@ -4,6 +4,7 @@ import com.delta.plugins.Plugin;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.items.Items;
 import kr.toxicity.model.api.BetterModel;
+import kr.toxicity.model.api.bukkit.platform.BukkitAdapter;
 import kr.toxicity.model.api.tracker.EntityTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -88,7 +89,7 @@ public class WhackaManager {
          whackModel.addModel(model, true);*/
         whack.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(Integer.MAX_VALUE, 0));
         EntityTracker tracker = BetterModel.model("whacka")
-                .map(r -> r.getOrCreate(whack)) //Gets or creates entity tracker by this renderer to some entity.
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
                 .orElse(null);
 
         return whack;
@@ -111,7 +112,7 @@ public class WhackaManager {
         whack.addPotionEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 0));
         whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
         EntityTracker tracker = BetterModel.model("whacka")
-                .map(r -> r.getOrCreate(whack)) //Gets or creates entity tracker by this renderer to some entity.
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
                 .orElse(null);
         /*ModeledEntity whackModel = ModelEngineAPI.createModeledEntity(whack);
          ActiveModel model = ModelEngineAPI.createActiveModel("whacka");

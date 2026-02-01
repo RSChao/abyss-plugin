@@ -161,6 +161,7 @@ public class Plugin extends JavaPlugin implements Listener
       berserker.registerTechniques();
       assaultant.registerTechniques();
       roaring_soul.register();
+      chaosWielder.register();
       musician.register();
       end_boss.register();
       poet.register();
@@ -179,7 +180,6 @@ public class Plugin extends JavaPlugin implements Listener
       devourer.register();
       Redeemed.register();
       clowns.register();
-      chaosWielder.register();
       sword_college.register();
       lynk.register();
       Familiar_love.register();
