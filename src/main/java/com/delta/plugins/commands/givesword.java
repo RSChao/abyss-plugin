@@ -2,7 +2,9 @@ package com.delta.plugins.commands;
 
 import com.delta.plugins.items.Items;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
+import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 
@@ -18,9 +20,8 @@ public class givesword {
             });
     public static CommandAPICommand container = new CommandAPICommand("container")
             .withPermission("delta.channeler")
-            .withArguments(new StringArgument("id"))
+            .withArguments(new StringArgument("id").replaceSuggestions(ArgumentSuggestions.strings(info -> TechRegistry.getRegisteredFruitIds().toArray(new String[0]))))
             .executesPlayer((player, args) -> {
-                // Assuming Items.espada_uno is a valid ItemStack
                 player.getInventory().addItem(Items.abyssContainer((String) args.get(0)));
                 hotbarMessage.sendHotbarMessage(player, "You have been given a container with id " + args.get(0)+ "!");
             });
