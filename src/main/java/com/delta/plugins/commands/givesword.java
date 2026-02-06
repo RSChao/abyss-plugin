@@ -20,7 +20,7 @@ public class givesword {
             });
     public static CommandAPICommand container = new CommandAPICommand("container")
             .withPermission("delta.channeler")
-            .withArguments(new StringArgument("id").replaceSuggestions(ArgumentSuggestions.strings(info -> TechRegistry.getRegisteredFruitIds().toArray(new String[0]))))
+            .withArguments(new StringArgument("id"))
             .executesPlayer((player, args) -> {
                 player.getInventory().addItem(Items.abyssContainer((String) args.get(0)));
                 hotbarMessage.sendHotbarMessage(player, "You have been given a container with id " + args.get(0)+ "!");
