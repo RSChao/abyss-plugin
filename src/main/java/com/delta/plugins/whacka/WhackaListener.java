@@ -4,6 +4,7 @@ import com.delta.plugins.Plugin;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.items.Items;
 import com.delta.plugins.mobs.custom.Whacka_1_12_10;
+import com.rschao.events.soulEvents;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -153,8 +154,16 @@ public class WhackaListener implements Listener {
                     org.bukkit.persistence.PersistentDataType.BOOLEAN)) {
                 // Void Bump
                 Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("deltaplugin"), () -> {
-                    //TODO: Add void effect
-                    player.sendMessage("§5You feel the void's embrace...");
+                    if(soulEvents.hasSoul(player, 19)) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20 * 60, 1));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 60, 1));
+                        player.sendMessage("§5You feel the void's embrace...");
+                    } else {
+                         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 60, 1));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * 60, 1));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 60, 1));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20 * 60, 1));
+                    }
                 }, 1L);
             }
         }

@@ -277,13 +277,6 @@ public class PitEvents implements Listener {
             p.sendMessage("Has recibido un agujero para llave.");
             ev.setCancelled(true);
         }
-        else if(ev.getMessage().equals("!testlimb") && !Plugin.getMiawzVer()){
-            Player p = ev.getPlayer();
-            DummyTracker tracker = BetterModel.limb("testlimb")
-                    .map(r -> r.create(BukkitAdapter.adapt(p.getPlayer().getLocation()), ModelProfile.of(BukkitAdapter.adapt(p)))) //Creates some dummy tracker to this location and player's skin profile.
-                    .orElse(null);
-            ev.setCancelled(true);
-        }
         else if(ev.getMessage().equals("!key") && !Plugin.getMiawzVer()){
             Player p = ev.getPlayer();
             p.getInventory().addItem(PitItems.floor_key);
@@ -354,6 +347,11 @@ public class PitEvents implements Listener {
                 else if(type.equals("rare")){
                     Player p = ev.getPlayer();
                     p.getInventory().addItem(Items.rare_whacka_bump);
+                    ev.setCancelled(true);
+                }
+                else if(type.equals("void")){
+                    Player p = ev.getPlayer();
+                    p.getInventory().addItem(Items.voidBump());
                     ev.setCancelled(true);
                 }
                 else if(type.equals("gold")){
