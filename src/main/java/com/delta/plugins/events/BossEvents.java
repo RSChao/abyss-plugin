@@ -2,7 +2,9 @@ package com.delta.plugins.events;
 
 import com.delta.plugins.Plugin;
 import com.delta.plugins.techs.OriginDepleter;
+import com.rschao.boss_battle.BossAPI;
 import com.rschao.boss_battle.InvManager;
+import com.rschao.boss_battle.api.BossHandler;
 import com.rschao.boss_battle.bossEvents;
 import com.rschao.events.definitions.BossChangeEvent;
 import com.rschao.events.soulEvents;
@@ -11,22 +13,19 @@ import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.io.File;
 import java.util.List;
 
 public class BossEvents implements Listener {
     @EventHandler
     void onBossChange(BossChangeEvent ev){
-        String bossName = ev.getBossName();
         String playerName = ev.getBossPlayer().getName();
-        FileConfiguration bossConfig = YamlConfiguration.loadConfiguration(new File(Bukkit.getPluginManager().getPlugin("bossfight").getDataFolder() + "/bosses/", bossName + ".yml"));
+        FileConfiguration bossConfig = ev.config;
         FileConfiguration config = com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).getConfig();
-        List<String> abyss = bossConfig.getStringList("boss.world." + ev.getPhase() + ".abyss");
+        List<String> abyss = BossAPI.getAddon(bossConfig, ev.getPhase(), "abyss");
         if(abyss.isEmpty()) {
             return;
         }
