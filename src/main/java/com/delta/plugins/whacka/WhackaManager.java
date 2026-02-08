@@ -121,6 +121,28 @@ public class WhackaManager {
         return whack;
     }
 
+    public static Entity spawnWhackaFriendEntity(Location loc, Player p, String modelId) {
+        Wolf whack = loc.getWorld().spawn(loc, Wolf.class);
+        whack.setOwner(p);
+        whack.setTamed(true);
+        whack.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(10.0);
+        whack.getAttribute(Attribute.MAX_HEALTH).setBaseValue(200.0);
+        whack.setHealth(200.0);
+        whack.setCustomName("Whacka");
+        setBumpDrop(whack);
+        whack.getEquipment().setHelmetDropChance(100);
+        whack.getPersistentDataContainer().set(WHACKA_KEY, PersistentDataType.INTEGER, 0);
+        whack.getPersistentDataContainer().set(FRIEND_KEY, PersistentDataType.BOOLEAN, true);
+        //whack.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(Integer.MAX_VALUE, 0));
+        whack.addPotionEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 0));
+        whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
+        EntityTracker tracker = BetterModel.model(modelId)
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
+                .orElse(null);
+
+        return whack;
+    }
+
     public static Silverfish getWhacka() {
         return (whacka != null && whacka.isValid() && !whacka.isDead()) ? whacka : null;
     }

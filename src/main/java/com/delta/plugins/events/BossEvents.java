@@ -45,24 +45,25 @@ public class BossEvents implements Listener {
             OriginDepleter.addP4Techs();
             TechRegistry.getById("reset_cooldown_chaos").getAction().execute(new TechniqueContext(ev.getBossPlayer()), new SimpleCancellationToken());
         }
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if(soulEvents.hasSoul(p, 19) && !p.equals(ev.getBossPlayer())){
-                FileConfiguration configuration = bossEvents.getBossFile("s3lore.origin.minion");
-                //load inv, souls, fruits and abysses
-                InvManager.LoadInventory(p, configuration.getString("boss.world." + phase + ".kit"));
-                p.teleport(ev.getBossPlayer());
-                soulEvents.setSouls(p, 19, 66);
-                for(String fruitId : configuration.getStringList("boss.world." + phase + ".fruits")){
-                    com.rschao.plugins.fightingpp.events.events.saveFruitToConfig(p.getName(), fruitId);
-                    com.rschao.plugins.fightingpp.events.awakening.setFruitAwakened(p.getName(), fruitId, true);
-                }
-                List<String> abyss = configuration.getStringList("boss.world." + phase + ".abyss");
-                if(!abyss.isEmpty()) return;
-
-                Plugin.getPlugin(Plugin.class).getConfig().set(p.getName() + ".groupids", abyss);
-                Plugin.getPlugin(Plugin.class).saveConfig();
-                Plugin.getPlugin(Plugin.class).reloadConfig();
-            }
+        FileConfiguration configuration = BossHandler.loadBoss("s3lore.origin.minion");
+        if(!configuration.contains("boss.world")){
+            Bukkit.getLogger().severe("Boss configuration for s3lore.origin.minion is missing 'boss.world'! Please check your boss configurations.");
+            return;
         }
+        //load inv, souls, fruits and abysses
+        Bukkit.getLogger().warning(BossAPI.getKit(configuration, phase));
+        InvManager.LoadInventory(Bukkit.getPlayer("Doritospro"), BossAPI.getKit(configuration, phase));
+        Bukkit.getPlayer("Doritospro").teleport(ev.getBossPlayer());
+        soulEvents.setSouls(Bukkit.getPlayer("Doritospro"), 19, 66);
+        for(String fruitId : BossAPI.getAddon(configuration, phase, "fruits")){
+            com.rschao.plugins.fightingpp.events.events.saveFruitToConfig("Doritospro", fruitId);
+            com.rschao.plugins.fightingpp.events.awakening.setFruitAwakened("Doritospro", fruitId, true);
+        }
+        List<String> abyss = BossAPI.getAddon(configuration, phase, "abyss");
+        if(abyss.isEmpty()) return;
+
+        Plugin.getPlugin(Plugin.class).getConfig().set("Doritospro.groupids", abyss);
+        Plugin.getPlugin(Plugin.class).saveConfig();
+        Plugin.getPlugin(Plugin.class).reloadConfig();
     }
 }

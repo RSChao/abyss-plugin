@@ -12,6 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 
+import java.util.List;
+import java.util.Random;
+
 public class Items {
     public static ItemStack abyss_test;
     public static ItemStack pure_heart_red;
@@ -146,9 +149,46 @@ public class Items {
             new NamespacedKey(Plugin.getPlugin(Plugin.class), "abyss_id"),
             org.bukkit.persistence.PersistentDataType.STRING, id
         );
+        meta.setItemModel(NamespacedKey.minecraft(getAbyssModel(id)));
         meta.setItemName(ChatColor.DARK_PURPLE + "Abyss ID: " + id);
         item.setItemMeta(meta);
         return item;
+    }
+
+
+    public static String getAbyssModel(String id){
+        String model = "abyss_";
+        switch (id) {
+            case "roaring_soul":
+                model += "blue";
+                break;
+            case "poet":
+                model += "green";
+                break;
+            case "chosen_one", "offspring":
+                model += "red";
+                break;
+            case "devourer":
+                model += "black";
+                break;
+            case "chaos_wielder":
+                model += "violet";
+                break;
+            case "exsolig", "queen":
+                model += "white";
+                break;
+            default:
+                break;
+        }
+
+        if(!model.equals("abyss_")){
+            return model;
+        }
+
+        List<String> colors = List.of("blue", "green", "red", "white", "yellow", "violet", "light_blue", "gold");
+        model += colors.get((new Random()).nextInt(colors.size()));
+
+        return model;
     }
     public static ItemStack hoe(){
         ItemStack item = new ItemStack(Material.NETHERITE_HOE);

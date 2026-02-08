@@ -10,6 +10,9 @@ import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
+import kr.toxicity.model.api.BetterModel;
+import kr.toxicity.model.api.bukkit.platform.BukkitAdapter;
+import kr.toxicity.model.api.tracker.EntityTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -71,14 +74,20 @@ public class Whacka_abyss {
             for(int i = 0; i < amnt; i++){
                 String name = guakaNames.get(random.nextInt(guakaNames.size()));
                 Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> {
-                    Wolf w =(Wolf) WhackaManager.spawnWhackaFriendEntity(player.getLocation(), player);
-                    w.setCustomName(name);
+                    Wolf w;
                     if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")){
+                        w = (Wolf) WhackaManager.spawnWhackaFriendEntity(player.getLocation(), player, "whackentio");
+                        w.setCustomName(name);
                         w.getAttribute(Attribute.MAX_HEALTH).setBaseValue(300.0);
                         w.setHealth(300.0);
+                        EntityTracker tracker = BetterModel.model("whackentio")
+                                .map(r -> r.getOrCreate(BukkitAdapter.adapt(w))) //Gets or creates entity tracker by this renderer to some entity.
+                                .orElse(null);
                         player.sendMessage("§6¡Has invocado a " + name + ", un Guaka legendario! §c(300 HP)");
                     }
                     else {
+                        w = (Wolf) WhackaManager.spawnWhackaFriendEntity(player.getLocation(), player, "whacka");
+                        w.setCustomName(name);
                         player.sendMessage("Has invocado a " + name + " el Guaka");
                     }
                     WhackaManager.setBumpDrop(w);
