@@ -32,8 +32,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
@@ -319,7 +321,6 @@ public class PitEvents implements Listener {
         else if(ev.getMessage().startsWith("!bumps")){
             if(ev.getMessage().length() < 7) {
                 ev.setCancelled(true);
-                return;
             }
             else {
                 String[] parts = ev.getMessage().split(" ");
