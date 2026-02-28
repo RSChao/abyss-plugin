@@ -19,7 +19,10 @@ import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -102,6 +105,7 @@ public class OriginAider {
             if(p == null) return;
             DestinyBondEvents.addDestinyBond(ctx.caster(), p);
             hotbarMessage.sendHotbarMessage(ctx.caster(), "Destiny Bonded to " + p.getName() + "!");
+            p.sendTitle("&5&lDestiny Bonded to " + p.getName() + "!", "Your lives are now linked!", 10, 70, 20);
 
     });
 

@@ -210,7 +210,6 @@ public class Plugin extends JavaPlugin implements Listener
       makeDarkWorld.register(getPlugin(Plugin.class));
       pureHeartPillar.register();
       SummonIndestructibleItem.command.register();
-      setAbyss.command2.register();
       setAbyss.commandAll.register();
       StartTower.command.register();
       StartTower.nextFloor.register();

@@ -4,6 +4,7 @@ import com.delta.plugins.Plugin;
 import com.delta.plugins.items.Items;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument.OnePlayer;
+import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -33,7 +34,7 @@ public class SummonPurityHeart {
         new CommandAPICommand("pureheartsequence")
                 .withPermission("pureheart.sequence")
                 .withHelp("Secuencia de corazones puros", "Secuencia especial de corazones puros en posiciones predeterminadas.")
-                .withArguments(new LocationArgument("location"))
+                .withArguments(new LocationArgument("location"), new IntegerArgument("radius", 1, 10))
                 .withOptionalArguments(new OnePlayer("player"))
                 .executes((sender, args) -> {
                     Location baseLoc = ((Location) args.get(0)).clone();
@@ -61,23 +62,17 @@ public class SummonPurityHeart {
                             player.getInventory().removeItem(heart);
                         }
                     }
-
+                    int radius = (int) args.get("radius");
                     // Posiciones predeterminadas para los corazones
                     List<Location> heartLocs = Arrays.asList(
-                            baseLoc.clone().add(-1, 0, 1),
-                            baseLoc.clone().add(-1, 0, 0),
-                            baseLoc.clone().add(-1, 0, -1),
-                            baseLoc.clone().add(0, 0, 1),
-                            baseLoc.clone().add(0, 0, -1),
-                            baseLoc.clone().add(1, 0, 1),
-                            baseLoc.clone().add(1, 0, 0),
-                            baseLoc.clone().add(1, 0, -1)
-                            /*
-                            * F: -X
-                            * B: +X
-                            * L: +Z
-                            * R: -Z
-                            * */
+                            baseLoc.clone().add(-radius, 0, radius),
+                            baseLoc.clone().add(-radius, 0, 0),
+                            baseLoc.clone().add(-radius, 0, -radius),
+                            baseLoc.clone().add(0, 0, radius),
+                            baseLoc.clone().add(0, 0, -radius),
+                            baseLoc.clone().add(radius, 0, radius),
+                            baseLoc.clone().add(radius, 0, 0),
+                            baseLoc.clone().add(radius, 0, -radius)
                     );
                     Map<String, Location> heartPosMap = new LinkedHashMap<>();
                     int idx = 0;

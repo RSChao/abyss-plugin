@@ -13,6 +13,7 @@ import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.register.TechniqueNameManager;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import org.bukkit.Bukkit;
@@ -119,7 +120,7 @@ public class poet {
                     text.add("&4and become his vessel.");
                     text.add("&4&lLET US WRECH HAVOC, AS FAR AS THE EYE CAN SEE!");
                     text.add("Origin the butcher of Oblivion has bestowed upon you his power...");
-                    text.add("Unleashing " + technique.getDisplayName());
+                    text.add("Unleashing " + TechniqueNameManager.getDisplayName(player, technique));
                     new BukkitRunnable(){
                         int ticks = 0;
                         @Override
@@ -178,7 +179,7 @@ public class poet {
                     text.add("&4and become his vessel.");
                     text.add("&4&lLET US WRECH HAVOC, AS FAR AS THE EYE CAN SEE!");
                     text.add("Origin the butcher of Oblivion has bestowed upon you his power...");
-                    text.add("Unleashing " + technique.getDisplayName());
+                    text.add("Unleashing " + TechniqueNameManager.getDisplayName(player, technique));
                     Technique finalTechnique = technique;
                     new BukkitRunnable(){
                         int ticks = 0;

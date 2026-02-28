@@ -5,8 +5,10 @@ import com.delta.plugins.techs.OriginDepleter;
 import com.rschao.boss_battle.BossAPI;
 import com.rschao.boss_battle.InvManager;
 import com.rschao.boss_battle.api.BossHandler;
+import com.rschao.boss_battle.api.BossInstance;
 import com.rschao.boss_battle.bossEvents;
 import com.rschao.events.definitions.BossChangeEvent;
+import com.rschao.events.definitions.BossEndEvent;
 import com.rschao.events.soulEvents;
 import com.rschao.plugins.techniqueAPI.tech.cancel.SimpleCancellationToken;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
@@ -17,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BossEvents implements Listener {

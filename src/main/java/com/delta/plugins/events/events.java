@@ -12,6 +12,7 @@ import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.register.TechniqueNameManager;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
 import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
@@ -58,15 +59,6 @@ public class events implements Listener {
             return name.substring(1);
         }
         return name;
-    }
-    @EventHandler
-    void onEchestInteract(PlayerInteractEvent ev){
-        Player p = ev.getPlayer();
-        if(ev.getClickedBlock() == null) return;
-        if(ev.getClickedBlock().getType().equals(Material.ENDER_CHEST) && ev.getAction().toString().contains("RIGHT")){
-            ev.setCancelled(true);
-            Bukkit.dispatchCommand(p, "vault");
-        }
     }
 
     @EventHandler
@@ -169,7 +161,7 @@ public class events implements Listener {
                 PlayerTechniqueManager.setCurrentTechnique(p.getUniqueId(), groupId, (techIndex + 1) % (hasChaosHeart(p)? TechRegistry.getAllTechniques(groupId).size() : TechRegistry.getNormalTechniques(groupId).size()));
                 techIndex = PlayerTechniqueManager.getCurrentTechnique(p.getUniqueId(), groupId);
             }
-            p.sendMessage("You have switched to technique: " + TechRegistry.getAllTechniques(groupId).get(techIndex).getDisplayName());
+            p.sendMessage("You have switched to technique: " + TechniqueNameManager.getDisplayName(p, TechRegistry.getAllTechniques(groupId).get(techIndex)));
         }
     }
 
@@ -286,7 +278,7 @@ public class events implements Listener {
             return;
         }
         groupId = groupId.replace("_", " ");
-        String techName = techs.get(techIndex).getDisplayName();
+        String techName = TechniqueNameManager.getDisplayName(player, techs.get(techIndex));
         hotbarMessage.sendHotbarMessage(player, "Technique: " + techName + " (Abyss " + groupId + ")");
     }
     /*@EventHandler

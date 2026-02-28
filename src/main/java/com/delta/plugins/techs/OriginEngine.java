@@ -8,6 +8,7 @@ import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
+import com.rschao.plugins.techniqueAPI.tech.register.TechniqueNameManager;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,7 +46,7 @@ public class OriginEngine {
         for(String fruit: com.delta.plugins.Plugin.getAllAbyssIDs()){
             for(Technique tech : TechRegistry.getUltimateTechniques(fruit)) {
                 ultis.add(tech);
-                techName = tech.getDisplayName();
+                techName = TechniqueNameManager.getDisplayName(techUser.caster(), tech);
             }
         }
         List<String> dialogue = List.of(
