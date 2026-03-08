@@ -22,10 +22,13 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import com.fren_gor.ultimateAdvancementAPI.util.CoordAdapter;
+import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Allay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -190,6 +193,7 @@ public class Plugin extends JavaPlugin implements Listener
       OriginDepleter.register();
       OriginEngine.register();
       OriginAider.register();
+      combat_will.register();
   }
 
   static void initCommands(){

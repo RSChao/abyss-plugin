@@ -60,7 +60,7 @@ public class Whacka_abyss {
         }
     );
 
-    static List<String> guakaNames = List.of("Guakórax", "Tómbaguak", "Guaktilio", "Chakaguá", "Guakumán", "Guakánimo", "Zambaguak", "Guaklopo", "Makaguá", "Guakarún", "Tlakaguak", "Guakencio", "Boroguak", "Guakachu", "Aguakán", "Guakito", "Guakardo", "Guaklitos", "Guakaster", "Guakín", "Guakardo", "Guakito", "Guakucho", "Ignaka", "Guakarío", "Guakabén");
+    static List<String> guakaNames = List.of("Guakórax", "Tómbaguak", "Guaktilio", "Chakaguá", "Guakumán", "Guakánimo", "Zambaguak", "Guaklopo", "Makaguá", "Guakarún", "Tlakaguak", "Guakencio", "Boroguak", "Guakachu", "Aguakán", "Guakito", "Guakardo", "Guaklitos", "Guakaster", "Guakín", "Guakardo", "Guakito", "Guakucho", "Ignaka", "Guakarío", "Guakabén", "Whackentio");
 
     public static Technique summonWhackaTech = new Technique(
         "whacka_summon_toomany",
@@ -75,7 +75,7 @@ public class Whacka_abyss {
                 String name = guakaNames.get(random.nextInt(guakaNames.size()));
                 Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> {
                     Wolf w;
-                    if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")){
+                    if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
                         w = (Wolf) WhackaManager.spawnWhackaFriendEntity(player.getLocation(), player, "whackentio");
                         w.setCustomName(name);
                         w.getAttribute(Attribute.MAX_HEALTH).setBaseValue(300.0);

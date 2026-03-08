@@ -270,11 +270,17 @@ public class devourer {
                                 if (tick % 20 == 0) {
                                     for (Player enemy : enemies) {
                                         player.sendMessage(enemy.getName());
-                                        Location feet = enemy.getLocation().clone().add(0, 1, 0);
                                         Bukkit.getScheduler().runTaskLater(plugin, () ->{
-                                            enemy.damage(100.0, player);
+                                            if(enemy.getActivePotionEffects().contains(PotionEffectType.RESISTANCE)){
+                                                //get level of resistance
+                                                int level = enemy.getActivePotionEffects().stream().filter(e -> e.getType().equals(PotionEffectType.RESISTANCE)).findFirst().map(PotionEffect::getAmplifier).orElse(0);
+                                                //remove resistance effect
+                                                if(level < 7){
+                                                    enemy.removePotionEffect(PotionEffectType.RESISTANCE);
+                                                }
+                                            }
+                                            enemy.damage(1000.0, player);
                                         }, 2);
-                                        world.createExplosion(feet.add(0, 1, 0), 7.0F, false, false, player);
                                     }
                                 }
                                 tick += 1;
