@@ -6,6 +6,7 @@ import com.delta.plugins.advs.whacka_tab.*;
 import com.delta.plugins.commands.*;
 import com.delta.plugins.darkworld.DarkWorldEvents;
 import com.delta.plugins.darkworld.DarkWorldRegistry;
+import com.delta.plugins.enchant.techs.PrimalKatana;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.events.specialEvents.DeltaGraveEvent;
 import com.delta.plugins.events.specialEvents.QuestionmarkAbyss;
@@ -22,7 +23,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import com.fren_gor.ultimateAdvancementAPI.util.CoordAdapter;
-import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
+import com.rschao.plugins.showdowncore.showdownCore.api.enchantment.definition.EasyEnchant;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -57,7 +58,7 @@ public class Plugin extends JavaPlugin implements Listener
       Items.Init();
      miawzVer = (getConfig().getBoolean("key.miawz"));
      if(!miawzVer){
-
+         initEnchants();
          PitItems.Init();
          DarkWorldRegistry.InitItems();
          initCommands();
@@ -194,6 +195,7 @@ public class Plugin extends JavaPlugin implements Listener
       OriginEngine.register();
       OriginAider.register();
       combat_will.register();
+      PrimalKatana.register();
   }
 
   static void initCommands(){
@@ -250,9 +252,14 @@ public class Plugin extends JavaPlugin implements Listener
       abyssIds.add(id);
     }
   }
-
-  public static List<String> getSpecialAbysses(){
-    return List.of("familiar_love");
+  public static void initEnchants(){
+      List<EasyEnchant> enchants = List.of(
+              new com.delta.plugins.enchant.DivineForgery(),
+              new com.delta.plugins.enchant.PrimalOblivion()
+      );
+      for(EasyEnchant enchant : enchants){
+          Bukkit.getPluginManager().registerEvents(enchant, Plugin.getPlugin(Plugin.class));
+      }
   }
   public static boolean getMiawzVer(){
     Plugin plugin = getPlugin(Plugin.class);
