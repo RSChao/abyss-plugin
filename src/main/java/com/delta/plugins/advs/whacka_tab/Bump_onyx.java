@@ -15,7 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
 
 public class Bump_onyx extends BaseAdvancement implements HiddenVisibility {
 
@@ -35,7 +34,7 @@ public class Bump_onyx extends BaseAdvancement implements HiddenVisibility {
     }
 
     @Override
-    public void giveReward(@Nonnull Player player) {
+    public void giveReward(Player player) {
         ItemStack i = PitItems.CoinPaper(256);
         Item it = player.getWorld().dropItemNaturally(player.getLocation(), i);
         it.setPickupDelay(0);
