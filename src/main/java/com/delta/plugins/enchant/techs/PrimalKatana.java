@@ -12,13 +12,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-// ...existing code...
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import com.delta.plugins.particles.SlashEffect;
-
 import java.util.List;
 
 public class PrimalKatana {
