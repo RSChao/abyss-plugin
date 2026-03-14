@@ -1,6 +1,7 @@
 package com.delta.plugins.commands;
 
 import com.delta.plugins.Plugin;
+import com.delta.plugins.items.ItemAnimations;
 import com.delta.plugins.items.Items;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument.OnePlayer;
@@ -37,10 +38,11 @@ public class SummonPurityHeart {
                 .withArguments(new LocationArgument("location"), new IntegerArgument("radius", 1, 10))
                 .withOptionalArguments(new OnePlayer("player"))
                 .executes((sender, args) -> {
+                    ItemAnimations.disablePureHeartAnimation();
                     Location baseLoc = ((Location) args.get(0)).clone();
                     Player player;
-                    if (args.count() > 1 && args.get(1) != null) {
-                        player = (Player) args.get(1);
+                    if (args.count() > 1 && args.get(2) != null) {
+                        player = (Player) args.get(2);
                     } else {
                         player = getClosestPlayer(baseLoc);
                     }
@@ -158,6 +160,19 @@ public class SummonPurityHeart {
                     sequenceTask[0].runTaskTimer(Plugin.getPlugin(Plugin.class), 0, 20);
                 })
                 .register();
+
+
+        CommandAPICommand purity = new CommandAPICommand("purity").withArguments(new LocationArgument("location"), new IntegerArgument("radius", 1, 10), new OnePlayer("player"))
+                .executes((sender, args) -> {
+                    Location loc = (Location) args.get(0);
+                    int radius = (int) args.get(1);
+                    Player player = (Player) args.get(2);
+                    assert loc != null;
+                    ItemAnimations.pureHeartOwnedAnimation(player, radius, loc);
+                });
+
+        new CommandAPICommand("animatehearts")
+                .withSubcommands(purity).register();
     }
     public static Player getClosestPlayer(Location location) {
         Player closestPlayer = null;

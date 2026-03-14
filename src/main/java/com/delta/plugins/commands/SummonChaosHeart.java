@@ -37,8 +37,8 @@ public class SummonChaosHeart {
                 .executes((sender, args) -> {
                     Location baseLoc = ((Location) args.get(0)).clone();
                     Player player;
-                    if (args.count() > 1 && args.get(1) != null) {
-                        player = (Player) args.get(1);
+                    if (args.count() > 1 && args.get(2) != null) {
+                        player = (Player) args.get(2);
                     } else {
                         player = getClosestPlayer(baseLoc);
                     }
