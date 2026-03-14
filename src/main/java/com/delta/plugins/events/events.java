@@ -49,6 +49,8 @@ public class events implements Listener {
     public static final Map<UUID, Boolean> hasCritDamage = new HashMap<>();
     public static final Map<UUID, Boolean> hasGenoDamage = new HashMap<>();
     public static final Map<UUID, Boolean> hasFlashDamage = new HashMap<>();
+    public static final Map<UUID, Boolean> hasDeadlyPunch = new HashMap<>();
+    public static final Map<UUID, Boolean> hasDeflect = new HashMap<>();
     public static final Map<UUID, Boolean> hasOmniNegate = new HashMap<>();
     // Track which group id index the player is currently using (0-2)
     public static final Map<UUID, Integer> playerGroupIdIndex = new HashMap<>();
@@ -88,24 +90,13 @@ public class events implements Listener {
                 p.sendMessage("You cannot carry more abyss.");
                 return;
             }
-            // Si el abyss es especial necesita 2 ranuras libres
-            boolean isSpecial = Plugin.getSpecialAbysses().contains(abyssId);
-            if(isSpecial){
-                int neededSlots = 2;
-                if(groupIds.size() > maxSlots - neededSlots){
-                    p.sendMessage("You cannot carry more abyss. Try removing another abyss first.");
-                    return;
-                }
-            }
+
             if(groupIds.contains(abyssId)){
                 p.sendMessage("You already have this abyss.");
                 return;
             }
             // Añadir el abyss; si es especial, ocupa 2 ranuras (añadimos el id dos veces)
             groupIds.add(abyssId);
-            if(isSpecial){
-                groupIds.add(abyssId);
-            }
             Plugin.getPlugin(Plugin.class).getConfig().set(sanitizePlayerName(p.getName()) + ".groupids", groupIds);
             Plugin.getPlugin(Plugin.class).saveConfig();
             Plugin.getPlugin(Plugin.class).reloadConfig();
@@ -218,6 +209,24 @@ public class events implements Listener {
                 event.setDamage(dmg);
                 hotbarMessage.sendHotbarMessage(player, "You have used a Black Flash!");
                 hasFlashDamage.put(playerId, false);
+            }
+            if (hasDeadlyPunch.getOrDefault(playerId, false)) {
+                // Apply crit damage logic here
+                int dmg = 600;
+                if(victim != null){
+                    if(hasChaosHeart(player)) dmg *= 2;
+                    if(hasPurityHeart(victim)) dmg /= 4;
+                }
+                event.setDamage(dmg);
+                hotbarMessage.sendHotbarMessage(player, "You have used a One-Punch Aura!");
+                hasDeadlyPunch.put(playerId, false);
+            }
+            if (hasDeflect.getOrDefault(playerId, false)) {
+                // Apply crit damage logic here
+                double baseDmg = event.getDamage();
+                if(event.getDamageSource().getCausingEntity() instanceof LivingEntity le){
+                    le.damage(baseDmg * (hasChaosHeart(player) ? 1 : 0.5));
+                }
             }
         }
 
