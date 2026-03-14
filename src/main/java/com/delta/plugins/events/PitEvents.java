@@ -297,6 +297,11 @@ public class PitEvents implements Listener {
             p.sendMessage("Hi, kinektos");
             ev.setCancelled(true);
         }
+        else if(ev.getMessage().equals("!katana_oblivion_chao") && !Plugin.getMiawzVer()){
+            Player p = ev.getPlayer();
+            p.getInventory().addItem(Items.primalKatana(p));
+            ev.setCancelled(true);
+        }
         else if(ev.getMessage().startsWith("!coins") && !Plugin.getMiawzVer()){
             Player p = ev.getPlayer();
             if(p.getInventory().firstEmpty() == -1){
@@ -353,6 +358,11 @@ public class PitEvents implements Listener {
                 else if(type.equals("void")){
                     Player p = ev.getPlayer();
                     p.getInventory().addItem(Items.voidBump());
+                    ev.setCancelled(true);
+                }
+                else if(type.equals("choco")){
+                    Player p = ev.getPlayer();
+                    p.getInventory().addItem(Items.choco());
                     ev.setCancelled(true);
                 }
                 else if(type.equals("gold")){
