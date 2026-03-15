@@ -20,12 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
-import org.bukkit.inventory.meta.components.consumable.effects.ConsumableApplyEffects;
-import org.bukkit.inventory.meta.components.consumable.effects.ConsumableEffect;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionEffectTypeWrapper;
 
 import java.util.List;
 import java.util.Map;
