@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -74,8 +75,9 @@ public class lovers {
             new BukkitRunnable(){
                 @Override
                 public void run() {
-                    HandEvents handEvents = new HandEvents();
-                    if(!handEvents.isPlayerInMidAir(player)){
+                    Block b = player.getLocation().subtract(0, 1, 0).getBlock();
+
+                    if(!b.getType().isAir()) {
                         this.cancel();
                         player.getWorld().createExplosion(player.getLocation(), 30, false, false, player);
                     }
