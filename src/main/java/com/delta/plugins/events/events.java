@@ -56,7 +56,7 @@ public class events implements Listener {
     public static final Map<UUID, Integer> playerGroupIdIndex = new HashMap<>();
 
     // Utility method to sanitize player names (remove leading dot)
-    private String sanitizePlayerName(String name) {
+    private static String sanitizePlayerName(String name) {
         if (name != null && name.startsWith(".")) {
             return name.substring(1);
         }
@@ -157,7 +157,7 @@ public class events implements Listener {
     }
 
     // Get the group id for a player at a given index (0-2)
-    public String getGroupId(Player p, int index){
+    public static String getGroupId(Player p, int index){
         FileConfiguration config = com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).getConfig();
         String playerName = sanitizePlayerName(p.getName());
         java.util.List<String> groupIds = config.getStringList(playerName + ".groupids");
@@ -168,7 +168,7 @@ public class events implements Listener {
     }
 
     // Get the number of group ids a player has
-    public int getGroupIdCount(Player p) {
+    public static int getGroupIdCount(Player p) {
         FileConfiguration config = com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).getConfig();
         String playerName = sanitizePlayerName(p.getName());
         java.util.List<String> groupIds = config.getStringList(playerName + ".groupids");

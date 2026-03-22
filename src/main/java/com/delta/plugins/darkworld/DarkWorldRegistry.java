@@ -121,9 +121,7 @@ public class DarkWorldRegistry {
         return -57;
     }
     static int getMaxYLevel(World w){
-        String worldName = w.getName();
-        if(worldName.endsWith("_nether")) return 124;
-        return 316;
+        return ((w.getMaxHeight()>512)? 510 : (w.getMaxHeight() - 3));
     }
 
 }
