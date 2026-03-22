@@ -53,7 +53,7 @@ public class PrimalKatana {
                 meta.setItemModel(NamespacedKey.minecraft("oblivion_katana_r"));
                 i.setItemMeta(meta);
                 p.sendMessage("Switched to right hand model!");
-                if(p.getMainHand().equals(MainHand.RIGHT)){
+                if(p.getMainHand().equals(MainHand.LEFT)){
                     KatanaSheathEvent sheathEvent = new KatanaSheathEvent(p);
                     Bukkit.getPluginManager().callEvent(sheathEvent);
                 }
@@ -62,7 +62,7 @@ public class PrimalKatana {
                 meta.setItemModel(NamespacedKey.minecraft("oblivion_katana_l"));
                 i.setItemMeta(meta);
                 p.sendMessage("Switched to left hand model!");
-                if(p.getMainHand().equals(MainHand.LEFT)){
+                if(p.getMainHand().equals(MainHand.RIGHT)){
                     KatanaSheathEvent sheathEvent = new KatanaSheathEvent(p);
                     Bukkit.getPluginManager().callEvent(sheathEvent);
                 }
@@ -139,7 +139,7 @@ public class PrimalKatana {
         (ctx, token) -> {
             Player p = ctx.caster();
             Location center = p.getLocation();
-            double radius = 300.0;
+            double radius = 100.0;
             new BukkitRunnable() {
                 int ticks = 0;
                 @Override
@@ -175,7 +175,7 @@ public class PrimalKatana {
     static Technique forgotten_magic = new Technique(
         "forgotten_magic",
         "Forgotten Magic",
-        new TechniqueMeta(true, cooldownHelper.minutesToMiliseconds(15), List.of("A forgotten magic that has yet to be discovered.")),
+        new TechniqueMeta(true, cooldownHelper.minutesToMiliseconds(15), List.of("A forgotten magic spell that erases a user's magic.")),
         TargetSelectors.self(),
         (ctx, token) -> {
             Player p = ctx.caster();
