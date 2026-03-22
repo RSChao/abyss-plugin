@@ -158,4 +158,13 @@ public class PrimalOblivion extends EasyEnchant {
             event.setDamage(4);
         }
     }
+
+    public boolean hasEnchantInInv(Player p){
+        for(ItemStack item : p.getInventory().getContents()){
+            if(item == null) continue;
+            if(!item.hasItemMeta()) continue;
+            if(item.containsEnchantment(this.getCustomEnchantment().toBukkitEnchantment())) return true;
+        }
+        return false;
+    }
 }

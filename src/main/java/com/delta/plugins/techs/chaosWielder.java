@@ -1,6 +1,7 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
+import com.delta.plugins.enchant.PrimalOblivion;
 import com.rschao.items.Items;
 // Reemplazadas las antiguas importaciones de techapi por techniqueAPI:
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -50,10 +51,11 @@ public class chaosWielder {
         TargetSelectors.self(),
         (ctx, token) -> {
             Player player = ctx.caster();
-            player.addPotionEffect(PotionEffectType.SPEED.createEffect(90*20, 1));
-            player.addPotionEffect(PotionEffectType.STRENGTH.createEffect(90*20, 1));
-            player.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(90*20, 1));
-            player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(90*20, 1));
+            int defLevel = (new PrimalOblivion()).hasEnchantInInv(player) ? 2 : 1;
+            player.addPotionEffect(PotionEffectType.SPEED.createEffect(90*20, defLevel));
+            player.addPotionEffect(PotionEffectType.STRENGTH.createEffect(90*20, defLevel));
+            player.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(90*20, defLevel));
+            player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(90*20, defLevel));
 
             for(Player p : Bukkit.getOnlinePlayers()){
                 if(p.equals(player)) continue;
@@ -83,6 +85,8 @@ public class chaosWielder {
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 20L);
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 40L);
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 60L);
+            if((new PrimalOblivion()).hasEnchantInInv(player))
+                Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 80L);
             hotbarMessage.sendHotbarMessage(player, "§c§l¡Has desatado el latido del caos!§r");
         }
     );
@@ -375,7 +379,7 @@ public class chaosWielder {
             if (p.equals(user)) continue;
             if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue; // excluir inmunes
             if (p.getLocation().distance(user.getLocation()) <= 30.0) {
-                double newHealth = p.getHealth() - 20.0;
+                double newHealth = p.getHealth() - ((new PrimalOblivion()).hasEnchantInInv(user)? 16 : 20);
                 if (newHealth <= 0) {
                     // aplicar daño masivo para forzar muerte si corresponde
                     p.damage(300.0, user);
@@ -385,7 +389,7 @@ public class chaosWielder {
                         p.setHealth(newHealth);
                         p.damage(1, user);
                     } catch (Exception ignore) { /* si falla, intentar infligir daño equivalente */
-                        p.damage(20.0, user);
+                        p.damage((new PrimalOblivion()).hasEnchantInInv(user)? 16 : 20, user);
                     }
                 }
             }

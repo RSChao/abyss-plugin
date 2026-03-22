@@ -263,11 +263,13 @@ public class poet {
 
                     // Lanzar flechas después de 1 segundo, 1 por tick, hasta 20
                     if (tick >= arrowStartTick && arrowsShot < arrowsToShoot) {
+                        Location eyeLoc = player.getEyeLocation();
+                        Vector direction = eyeLoc.getDirection().normalize();
                         Arrow arrow = player.getWorld().spawnArrow(
-                            eyeLoc.clone().add(direction.clone().multiply(1.0)), // un poco delante de los ojos
-                            direction.clone(),
-                            (float) 1.0,
-                            0.0f // spread
+                                eyeLoc.clone().add(direction.clone().multiply(1.0)),
+                                direction.clone(),
+                                (float) 1.0,
+                                0.0f
                         );
                         arrow.setShooter(player);
                         arrow.setDamage(10.0);

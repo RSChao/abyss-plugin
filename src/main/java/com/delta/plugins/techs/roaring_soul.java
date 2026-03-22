@@ -1,6 +1,7 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
+import com.delta.plugins.enchant.PrimalOblivion;
 import com.delta.plugins.events.events;
 import com.delta.plugins.items.Items;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -74,7 +75,7 @@ public class roaring_soul implements Listener {
 
             Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> CooldownManager.setCooldown(player, "geno", cooldownHelper.minutesToMiliseconds(5)), 2);
             Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), true), 7);
-            Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), false), 18 + (Familiar_love.OstiacionActive.getOrDefault(player, false) ? 10 : 0));
+            Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), false), 18 + (((Familiar_love.OstiacionActive.getOrDefault(player, false) || (new PrimalOblivion()).hasEnchantInInv(player)) ? 10 : 0)));
         }
     );
 
@@ -88,9 +89,10 @@ public class roaring_soul implements Listener {
             Player player = ctx.caster();
             Location center = player.getLocation().getBlock().getLocation().add(0.5, 0, 0.5);
             int maxRadius = (events.hasChaosHeart(player) ? 70 : 50);
+            boolean oblivion = (new PrimalOblivion()).hasEnchantInInv(player);
+            if(oblivion && maxRadius == 70) maxRadius += 20;
             Set<Block> sphereBlocks = new HashSet<>();
             Set<BlockState> replacedBlocks = new HashSet<>();
-
             // Dar visión nocturna y fuerza por 1 minuto
             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60, 0, false, false, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20 * 60, 1, false, false, false));
@@ -144,14 +146,16 @@ public class roaring_soul implements Listener {
                         if (!(ep.getShooter() instanceof Player) || !ep.getShooter().equals(user)) {
                             Player p = (Player) ep.getShooter();
                             if(PlayerTechniqueManager.isInmune(p.getUniqueId())) continue;
-                            if(events.hasPurityHeart(p)) return;
+                            if(events.hasPurityHeart(p)) continue;
+                            if(ep.getWorld() != p.getWorld()) continue;
+                            if(ep.getLocation().distance(center) >= radius) continue;
                             e.remove();
                         }
                     }
                 }
                 ticks += 2;
                 for(Player p : affectedPlayers){
-                    if(ticks <31 && p.getLocation().distance(center) >= radius){
+                    if(ticks <31*20 && p.getLocation().distance(center) >= radius){
                         p.teleport(center);
                     }
                 }
