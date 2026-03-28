@@ -26,7 +26,7 @@ public class givesword {
                 hotbarMessage.sendHotbarMessage(player, "You have been given a container with id " + args.get(0)+ "!");
             });
     public static CommandAPICommand withdraw = new CommandAPICommand("abysswithdraw")
-            .withArguments(new IntegerArgument("number", 1, 4))
+            .withArguments(new IntegerArgument("number", 1))
             .executesPlayer((player, args) -> {
                 int amount = (int) args.get(0);
                 List<String> ids = com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).getConfig().getStringList(player.getName() + ".groupids");

@@ -38,6 +38,8 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -86,6 +88,18 @@ public class events implements Listener {
             }
             List<String> groupIds = Plugin.getPlugin(Plugin.class).getConfig().getStringList(sanitizePlayerName(p.getName()) + ".groupids");
             int maxSlots = (p.hasPermission("delta.abyss.4") ? 4 : 3);
+            for(PermissionAttachmentInfo perm : p.getEffectivePermissions()){
+                if(perm.getPermission().startsWith("delta.abyss.")){
+                    String numberString =  perm.getPermission().substring("delta.abyss.".length());
+                    try{
+                        int number = Integer.parseInt(numberString);
+                        if(number > maxSlots) maxSlots = number;
+                    } catch (NumberFormatException ignored){
+                        maxSlots = Math.max(maxSlots, 3);
+                    }
+
+                }
+            }
             if(groupIds.size() >= maxSlots){
                 p.sendMessage("You cannot carry more abyss.");
                 return;
