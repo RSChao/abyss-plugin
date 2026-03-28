@@ -26,10 +26,6 @@ public class setAbyss {
                     player.sendMessage("Player already has this group id.");
                     return;
                 }
-                if(groupIds.size() >= 3){
-                    player.sendMessage("Player already has 3 group ids.");
-                    return;
-                }
                 groupIds.add(id);
                 config.set(targetPlayer.getName() + ".groupids", groupIds);
                 com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).saveConfig();
