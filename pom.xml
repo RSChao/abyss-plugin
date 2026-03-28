@@ -16,6 +16,11 @@
 	</properties>
 
 	<repositories>
+
+        <repository>
+            <id>matteodev</id>
+            <url>https://maven.devs.beer/</url>
+        </repository>
 		<!-- This adds the Spigot Maven repository to the build -->
 		<repository>
 			<id>spigot-repo</id>
@@ -120,6 +125,13 @@
             <version>1.21-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\fightingplusplus-1.21-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.16</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\RSChao\Documents\NexoMaker\Projects\showdown-smp\Environment\paper-1.21.11\plugins\ItemsAdder_4.0.16.jar</systemPath>
         </dependency>
 	</dependencies>
 	<build>
