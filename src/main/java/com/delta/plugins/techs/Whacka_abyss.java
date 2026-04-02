@@ -60,7 +60,7 @@ public class Whacka_abyss {
         }
     );
 
-    static List<String> guakaNames = List.of("Guakórax", "Tómbaguak", "Guaktilio", "Chakaguá", "Guakumán", "Guakánimo", "Zambaguak", "Guaklopo", "Makaguá", "Guakarún", "Tlakaguak", "Guakencio", "Boroguak", "Guakachu", "Aguakán", "Guakito", "Guakardo", "Guaklitos", "Guakaster", "Guakín", "Guakardo", "Guakito", "Guakucho", "Ignaka", "Guakarío", "Guakabén", "Whackentio");
+    public static List<String> guakaNames = List.of("Guakórax", "Tómbaguak", "Guaktilio", "Chakaguá", "Guakumán", "Guakánimo", "Zambaguak", "Guaklopo", "Makaguá", "Guakarún", "Tlakaguak", "Guakencio", "Boroguak", "Guakachu", "Aguakán", "Guakito", "Guakardo", "Guaklitos", "Guakaster", "Guakín", "Guakardo", "Guakito", "Guakucho", "Ignaka", "Guakarío", "Guakabén", "Whackentio");
 
     public static Technique summonWhackaTech = new Technique(
         "whacka_summon_toomany",
