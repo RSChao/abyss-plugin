@@ -2,10 +2,8 @@ package com.delta.plugins.events;
 
 import com.delta.plugins.Plugin;
 import com.delta.plugins.items.Items;
-import com.delta.plugins.techs.Necrozma;
-import com.delta.plugins.techs.chaosWielder;
-import com.delta.plugins.techs.offspring;
-import com.delta.plugins.techs.poet;
+import com.delta.plugins.mobs.custom.Whacka_1_12_10;
+import com.delta.plugins.techs.*;
 import com.rschao.plugins.showdowncore.showdownCore.api.runnables.ShowdownScript;
 import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -18,6 +16,7 @@ import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 
+import dev.lone.itemsadder.api.CustomEntity;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,10 +31,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.permissions.Permission;
@@ -631,6 +627,22 @@ public class events implements Listener {
                 if (itemInFrame.isSimilar(bannedItem)) {
                     e.setCancelled(true);
                     return;
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    void onEntityMove(PlayerMoveEvent e){
+        for(Entity entity : e.getPlayer().getNearbyEntities(20, 20, 20)){
+            if(entity instanceof LivingEntity le){
+                if(le.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)){
+                    String name = le.getCustomName();
+                    if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
+                        CustomEntity.convert("whacka:whackentio", le);
+                        return;
+                    }
+                    CustomEntity.convert("whacka:whacka", le);
                 }
             }
         }

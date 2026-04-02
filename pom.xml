@@ -129,9 +129,8 @@
         <dependency>
             <groupId>dev.lone</groupId>
             <artifactId>api-itemsadder</artifactId>
-            <version>4.0.16</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\RSChao\Documents\NexoMaker\Projects\showdown-smp\Environment\paper-1.21.11\plugins\ItemsAdder_4.0.16.jar</systemPath>
+            <version>4.0.10</version>
+            <scope>provided</scope>
         </dependency>
 	</dependencies>
 	<build>

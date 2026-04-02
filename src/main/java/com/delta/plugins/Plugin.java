@@ -51,13 +51,15 @@ public class Plugin extends JavaPlugin implements Listener
   private static final Logger LOGGER=Logger.getLogger("deltaplugin");
   private static final List<String> abyssIds = new ArrayList<>();
   boolean miawzVer = false;
-  public void onEnable()
+    public void onLoad() {
+        Items.Init();
+    }
+
+    public void onEnable()
   {
       effectManager = new EffectManager(this);
-
-      Items.Init();
-     miawzVer = (getConfig().getBoolean("key.miawz"));
-     if(!miawzVer){
+      miawzVer = (getConfig().getBoolean("key.miawz"));
+      if(!miawzVer){
          initEnchants();
          PitItems.Init();
          DarkWorldRegistry.InitItems();
@@ -66,7 +68,7 @@ public class Plugin extends JavaPlugin implements Listener
          initTechniques();
          // Register events
          initEvents();
-     }
+      }
       // Initialize advancement tabs
       initializeTabs();
 
