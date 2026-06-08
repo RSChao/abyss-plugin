@@ -17,3 +17,4 @@ softdepend:
   - fightingplusplus
   - TechniqueAPI
   - ShowdownCore
+load: POSTWORLD
