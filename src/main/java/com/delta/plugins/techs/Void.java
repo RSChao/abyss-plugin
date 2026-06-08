@@ -234,7 +234,7 @@ public class Void {
 
     static class Events implements Listener{
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         void onPlayerChat(PlayerChatEvent ev){
             if(ev.getMessage().contains(voidTech.getDisplayName()) && ev.getPlayer().isOp() && ev.getPlayer().hasPermission("showdown.void_termina")){
                 Player p = ev.getPlayer();
