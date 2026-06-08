@@ -30,6 +30,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -400,12 +401,6 @@ public class events implements Listener {
         }, 30 * 20L);
     });
     @EventHandler
-    void onPlayerJoin(PlayerJoinEvent ev){
-        Player p = ev.getPlayer();
-        if(p.getName().startsWith(".")) return;
-        p.setResourcePack("https://www.dropbox.com/scl/fi/62qwfxhu9c93dns78l6ht/Server-Pack.zip?rlkey=p61zix8a3oc4mglrgz0hejube&st=dh92p5r5&dl=1");
-    }
-    @EventHandler
     void onPlayerUsePureHeart(PlayerInteractEvent ev){
         Player p = ev.getPlayer();
         ItemStack item = ev.getItem();
@@ -633,10 +628,11 @@ public class events implements Listener {
     }
 
     @EventHandler
-    void onEntityMove(PlayerMoveEvent e){
+    void onEntityMove(PlayerLoginEvent e){
         for(Entity entity : e.getPlayer().getNearbyEntities(20, 20, 20)){
             if(entity instanceof LivingEntity le){
                 if(le.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)){
+                    if(CustomEntity.isCustomEntity(le)) return; // already converted
                     String name = le.getCustomName();
                     if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
                         CustomEntity.convert("whacka:whackentio", le);
@@ -644,6 +640,20 @@ public class events implements Listener {
                     }
                     CustomEntity.convert("whacka:whacka", le);
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    void onEntityMove(EntityTeleportEvent e){
+        if(e.getEntity() instanceof LivingEntity le){
+            if(le.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)){
+                String name = le.getCustomName();
+                if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
+                    CustomEntity.convert("whacka:whackentio", le);
+                    return;
+                }
+                CustomEntity.convert("whacka:whacka", le);
             }
         }
     }
