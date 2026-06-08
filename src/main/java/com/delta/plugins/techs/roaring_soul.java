@@ -1,7 +1,6 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
-import com.delta.plugins.enchant.PrimalOblivion;
 import com.delta.plugins.events.events;
 import com.delta.plugins.items.Items;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -75,7 +74,7 @@ public class roaring_soul implements Listener {
 
             Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> CooldownManager.setCooldown(player, "geno", cooldownHelper.minutesToMiliseconds(5)), 2);
             Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), true), 7);
-            Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), false), 18 + (((Familiar_love.OstiacionActive.getOrDefault(player, false) || (new PrimalOblivion()).hasEnchantInInv(player)) ? 10 : 0)));
+            Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () -> events.hasGenoDamage.put(player.getUniqueId(), false), 18 + (((Familiar_love.OstiacionActive.getOrDefault(player, false)) ? 10 : 0)));
         }
     );
 
@@ -89,8 +88,6 @@ public class roaring_soul implements Listener {
             Player player = ctx.caster();
             Location center = player.getLocation().getBlock().getLocation().add(0.5, 0, 0.5);
             int maxRadius = (events.hasChaosHeart(player) ? 70 : 50);
-            boolean oblivion = (new PrimalOblivion()).hasEnchantInInv(player);
-            if(oblivion && maxRadius == 70) maxRadius += 20;
             Set<Block> sphereBlocks = new HashSet<>();
             Set<BlockState> replacedBlocks = new HashSet<>();
             // Dar visión nocturna y fuerza por 1 minuto

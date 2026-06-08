@@ -1,7 +1,6 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
-import com.delta.plugins.enchant.PrimalOblivion;
 import com.rschao.plugins.fightingpp.events.awakening;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
@@ -50,7 +49,7 @@ public class queen {
                     player.removePotionEffect(effect.getType());
                 }
             }
-            int defLevel = (new PrimalOblivion()).hasEnchantInInv(player) ? 2 : 1;
+            int defLevel = 1;
             player.addPotionEffect(PotionEffectType.SPEED.createEffect(90*20, defLevel));
             player.addPotionEffect(PotionEffectType.STRENGTH.createEffect(90*20, defLevel));
             player.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(90*20, defLevel));
@@ -94,7 +93,6 @@ public class queen {
                             return;
                         }
                         for (int i = 0; i < particlesPerTick; i++) {
-                            if((new PrimalOblivion()).hasEnchantInInv(player)) continue;
                             double dist = i * particleStep;
                             Location particleLoc = eyeLoc.clone().add(dir.clone().multiply(dist + tick * particleStep));
                             player.getWorld().spawnParticle(Particle.DUST, particleLoc, 0, new Particle.DustOptions(Color.SILVER, 1.5f));

@@ -1,7 +1,6 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
-import com.delta.plugins.enchant.PrimalOblivion;
 import com.delta.plugins.events.events;
 import com.rschao.plugins.fightingpp.techs.chao;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
@@ -54,7 +53,7 @@ public class manticore {
                     );
                     Vector finalDirection = direction.add(randomOffset).multiply(5); // Adjust speed multiplier as needed
                     org.bukkit.entity.Arrow arrow = player.launchProjectile(org.bukkit.entity.Arrow.class, finalDirection);
-                    arrow.setDamage((new PrimalOblivion()).hasEnchantInInv(player)? 30 : 20); // Set base damage
+                    arrow.setDamage( 20); // Set base damage
                     arrow.setGravity(false);
                     arrow.addCustomEffect(new PotionEffect(PotionEffectType.WITHER, 5 * 20, 1), true); // Apply Wither effect for 5 seconds
                     arrow.setVelocity(finalDirection);
@@ -147,7 +146,7 @@ public class manticore {
                                 arrow.addCustomEffect(new PotionEffect(PotionEffectType.SLOWNESS, 5 * 20, 255), true);
                             }
                             arrow.setCritical(true);
-                            arrow.setDamage((new PrimalOblivion()).hasEnchantInInv(finalTarget)? 10 : 7);
+                            arrow.setDamage( 7);
                             arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
                             arrow.setGravity(false);
                         }

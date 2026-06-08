@@ -1,7 +1,6 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
-import com.delta.plugins.enchant.PrimalOblivion;
 import com.rschao.items.Items;
 // Reemplazadas las antiguas importaciones de techapi por techniqueAPI:
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -51,7 +50,7 @@ public class chaosWielder {
         TargetSelectors.self(),
         (ctx, token) -> {
             Player player = ctx.caster();
-            int defLevel = (new PrimalOblivion()).hasEnchantInInv(player) ? 2 : 1;
+            int defLevel = 1;
             player.addPotionEffect(PotionEffectType.SPEED.createEffect(90*20, defLevel));
             player.addPotionEffect(PotionEffectType.STRENGTH.createEffect(90*20, defLevel));
             player.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(90*20, defLevel));
@@ -85,8 +84,6 @@ public class chaosWielder {
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 20L);
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 40L);
             Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 60L);
-            if((new PrimalOblivion()).hasEnchantInInv(player))
-                Bukkit.getScheduler().runTaskLater(plugin, () -> spawnWave(player), 80L);
             hotbarMessage.sendHotbarMessage(player, "§c§l¡Has desatado el latido del caos!§r");
         }
     );
@@ -360,7 +357,8 @@ public class chaosWielder {
             for(String id: TechRegistry.getRegisteredFruitIds()){
                 for(Technique t: TechRegistry.getAllTechniques(id)){
                     if(!excludedTechs.contains(t.getId())){
-                        CooldownManager.removeCooldown(player, t.getId());
+                        if(t.getMeta().isUltimate()) CooldownManager.setCooldown(player, t.getId(), cooldownHelper.minutesToMiliseconds(5));
+                        else CooldownManager.removeCooldown(player, t.getId());
                     }
                 }
             }
@@ -379,7 +377,7 @@ public class chaosWielder {
             if (p.equals(user)) continue;
             if (PlayerTechniqueManager.isInmune(p.getUniqueId())) continue; // excluir inmunes
             if (p.getLocation().distance(user.getLocation()) <= 30.0) {
-                double newHealth = p.getHealth() - ((new PrimalOblivion()).hasEnchantInInv(user)? 16 : 20);
+                double newHealth = p.getHealth() - 20;
                 if (newHealth <= 0) {
                     // aplicar daño masivo para forzar muerte si corresponde
                     p.damage(300.0, user);
@@ -389,7 +387,7 @@ public class chaosWielder {
                         p.setHealth(newHealth);
                         p.damage(1, user);
                     } catch (Exception ignore) { /* si falla, intentar infligir daño equivalente */
-                        p.damage((new PrimalOblivion()).hasEnchantInInv(user)? 16 : 20, user);
+                        p.damage(20, user);
                     }
                 }
             }
