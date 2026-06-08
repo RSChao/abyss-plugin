@@ -62,7 +62,7 @@ public class OriginAider {
     static Technique OblivionBuff = new Technique("oblivion_aider_buff", "Oblivion's Aid", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(2), List.of("")), TargetSelectors.self(), (techUser, target) -> {
         for(Player p: Bukkit.getOnlinePlayers()){
             if(!soulEvents.hasSoul(p, 19)) continue;
-            ShowdownScript<Void> buffScript = CoreScripts.buff;
+            ShowdownScript<java.lang.Void> buffScript = CoreScripts.buff;
             buffScript.setArgs(p, 1);
             buffScript.run();
         }

@@ -6,13 +6,13 @@ import com.delta.plugins.advs.whacka_tab.*;
 import com.delta.plugins.commands.*;
 import com.delta.plugins.darkworld.DarkWorldEvents;
 import com.delta.plugins.darkworld.DarkWorldRegistry;
-import com.delta.plugins.enchant.techs.PrimalKatana;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.events.specialEvents.DeltaGraveEvent;
 import com.delta.plugins.events.specialEvents.QuestionmarkAbyss;
 import com.delta.plugins.items.Items;
 import com.delta.plugins.items.PitItems;
 import com.delta.plugins.techs.*;
+import com.delta.plugins.techs.Void;
 import com.delta.plugins.whacka.WhackaListener;
 import com.delta.plugins.whacka.WhackaLocationCommand;
 import com.delta.plugins.whacka.WhackaManager;
@@ -52,15 +52,15 @@ public class Plugin extends JavaPlugin implements Listener
   private static final List<String> abyssIds = new ArrayList<>();
   boolean miawzVer = false;
     public void onLoad() {
-        Items.Init();
+
     }
 
     public void onEnable()
   {
       effectManager = new EffectManager(this);
       miawzVer = (getConfig().getBoolean("key.miawz"));
+      Items.Init();
       if(!miawzVer){
-         initEnchants();
          PitItems.Init();
          DarkWorldRegistry.InitItems();
          initCommands();
@@ -197,7 +197,7 @@ public class Plugin extends JavaPlugin implements Listener
       OriginEngine.register();
       OriginAider.register();
       combat_will.register();
-      PrimalKatana.register();
+      Void.register();
   }
 
   static void initCommands(){
@@ -253,15 +253,6 @@ public class Plugin extends JavaPlugin implements Listener
     if(!abyssIds.contains(id)){
       abyssIds.add(id);
     }
-  }
-  public static void initEnchants(){
-      List<EasyEnchant> enchants = List.of(
-              new com.delta.plugins.enchant.DivineForgery(),
-              new com.delta.plugins.enchant.PrimalOblivion()
-      );
-      for(EasyEnchant enchant : enchants){
-          Bukkit.getPluginManager().registerEvents(enchant, Plugin.getPlugin(Plugin.class));
-      }
   }
   public static boolean getMiawzVer(){
     Plugin plugin = getPlugin(Plugin.class);
