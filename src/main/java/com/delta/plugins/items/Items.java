@@ -1,13 +1,7 @@
 package com.delta.plugins.items;
 
 import com.delta.plugins.Plugin;
-import com.delta.plugins.enchant.DivineForgery;
-import com.delta.plugins.enchant.PrimalOblivion;
-import com.rschao.enchants.GenoEnchant;
-import com.rschao.enchants.GlitchEnchant;
-import com.rschao.enchants.OblivionEnchant;
-import com.rschao.enchants.WitherEnchant;
-import com.rschao.plugins.showdowncore.showdownCore.api.enchantment.registry.EnchantmentRegistry;
+import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,9 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.persistence.PersistentDataType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class Items {
@@ -61,7 +56,7 @@ public class Items {
 
     static public void Init() {
         // Initialize items here
-        abyss_test = abyss("Abyss Channeler");
+        abyss_test = abyss();
         pure_heart_red = pureHeart("red");
         pure_heart_brown = pureHeart("brown");
         pure_heart_blue = pureHeart("blue");
@@ -93,8 +88,10 @@ public class Items {
         onyx_whacka_bump = onyxWhackaBump();
         rainbow_whacka_bump = rainbowWhackaBump();
         Moly_holy = HolyMoly();
+
+
     }
-    static ItemStack abyss(String name) {
+    static ItemStack abyss() {
         ItemStack item = new ItemStack(Material.BLAZE_POWDER);
         ItemMeta meta = item.getItemMeta();
         meta.setEnchantmentGlintOverride(true);
@@ -102,7 +99,7 @@ public class Items {
             new NamespacedKey(Plugin.getPlugin(Plugin.class), "channeler"),
             org.bukkit.persistence.PersistentDataType.BOOLEAN, true
         );
-        meta.setItemName(name);
+        meta.setItemName("Abyss Channeler");
         item.setItemMeta(meta);
         return item;
     }
@@ -471,36 +468,6 @@ public class Items {
         food.setNutrition(20);
         food.setSaturation(20);
         meta.setFood(food);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack primalKatana(Player p){
-        ItemStack item = new ItemStack(Material.NETHERITE_SWORD);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Primal Oblivion Katana");
-        meta.setLore(java.util.Arrays.asList(
-                ChatColor.GRAY + "A blade forged by the god",
-                ChatColor.GRAY + "who created all of Showdown.",
-                ChatColor.GRAY + "It is said that this blade",
-                ChatColor.GRAY + "can cut through anything,",
-                ChatColor.GRAY + "even time and space."
-        ));
-        meta.addEnchant((new DivineForgery()).getCustomEnchantment().toBukkitEnchantment(), 3, true);
-        meta.addEnchant(Enchantment.FIRE_ASPECT, 3, true);
-        meta.addEnchant(Enchantment.SWEEPING_EDGE, 4, true);
-        meta.addEnchant((new GenoEnchant()).getCustomEnchantment().toBukkitEnchantment(), 4, true);
-        meta.addEnchant((new OblivionEnchant()).getCustomEnchantment().toBukkitEnchantment(), 1, true);
-        meta.addEnchant((new GlitchEnchant()).getCustomEnchantment().toBukkitEnchantment(), 2, true);
-        meta.addEnchant((new WitherEnchant()).getCustomEnchantment().toBukkitEnchantment(), 1, true);
-        Enchantment e = EnchantmentRegistry.getCustomEnchantment("minecraft", "drain");
-        if(e != null){
-            meta.addEnchant(e, 3, true);
-        }
-        meta.addEnchant((new PrimalOblivion()).getCustomEnchantment().toBukkitEnchantment(), 1, true);
-        MainHand mh = p.getMainHand();
-        meta.setItemModel(NamespacedKey.minecraft("oblivion_katana_" + ((mh.equals(MainHand.RIGHT)) ? "r" : "l")));
-        meta.setUnbreakable(true);
         item.setItemMeta(meta);
         return item;
     }
