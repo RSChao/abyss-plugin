@@ -4,8 +4,10 @@ import com.delta.plugins.Plugin;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.items.Items;
 import com.delta.plugins.mobs.custom.Whacka_1_12_10;
+import com.delta.plugins.techs.Whacka_abyss;
 import com.rschao.events.soulEvents;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
+import dev.lone.itemsadder.api.CustomEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -74,7 +76,8 @@ public class WhackaListener implements Listener {
     @EventHandler
     public void onWhackaDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Silverfish sf)) return;
+        if(!(entity instanceof LivingEntity sf)) return;
+        if(CustomEntity.isCustomEntity(sf)) Bukkit.getLogger().warning("Killed a Whacka!");
         if (!sf.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)) return;
         Player killer = sf.getKiller();
         if (killer == null) {
@@ -94,6 +97,12 @@ public class WhackaListener implements Listener {
             killer = closest;
         }
         if (killer != null) {
+            if(sf.getPersistentDataContainer().has(Whacka_1_12_10.FRIEND_KEY)){
+                event.getDrops().clear();
+                event.getEntity().getWorld().dropItemNaturally(entity.getLocation(), WhackaManager.petWhackaDrop(sf));
+                event.setDroppedExp(20000);
+                return;
+            }
             int kills = getKills(killer.getUniqueId());
             kills++;
             if (kills >= 8) {
@@ -101,12 +110,16 @@ public class WhackaListener implements Listener {
                 event.getEntity().getWorld().dropItemNaturally(entity.getLocation(), Items.rare_whacka_bump.clone());
 
             }
+            else{
+                event.getDrops().clear();
+                event.getEntity().getWorld().dropItemNaturally(entity.getLocation(), Items.whacka_bump.clone());
+            }
             event.setDroppedExp(9000);
             setKills(killer.getUniqueId(), kills%8);
             WhackaManager.assignRandomSpawn();
         }
         WhackaManager.removeWhacka();
-        WhackaManager.setCooldown(300_000L); // 5 minutes in ms
+        WhackaManager.setCooldown(300000L); // 5 minutes in ms
     }
 
     private int getKills(UUID uuid) {

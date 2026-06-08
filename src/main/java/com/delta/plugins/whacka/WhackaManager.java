@@ -137,8 +137,7 @@ public class WhackaManager {
         whack.getPersistentDataContainer().set(FRIEND_KEY, PersistentDataType.BOOLEAN, true);
         //whack.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(Integer.MAX_VALUE, 0));
         whack.addPotionEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 0));
-        whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
-        CustomEntity.convert("whacka:" + modelId, whack);
+        whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));https://docs.papermc.io/misc/java-install
         //EntityTracker tracker = BetterModel.model(modelId)
           //      .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
             //    .orElse(null);
@@ -160,6 +159,13 @@ public class WhackaManager {
         if(!whack.getName().equals("Whacka")) meta.setDisplayName(whack.getCustomName() + "'s Bump");
         drop.setItemMeta(meta);
         whack.getEquipment().setHelmet(drop);
+    }
+    public static ItemStack petWhackaDrop(LivingEntity whack){
+        ItemStack drop = Items.whackaBump();
+        ItemMeta meta = drop.getItemMeta();
+        if(!whack.getName().equals("Whacka")) meta.setDisplayName(whack.getCustomName() + "'s Bump");
+        drop.setItemMeta(meta);
+        return drop;
     }
 
     public static void setCooldown(long millis) {

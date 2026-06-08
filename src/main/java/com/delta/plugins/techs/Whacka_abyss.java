@@ -80,9 +80,6 @@ public class Whacka_abyss {
                         w.setCustomName(name);
                         w.getAttribute(Attribute.MAX_HEALTH).setBaseValue(300.0);
                         w.setHealth(300.0);
-                        EntityTracker tracker = BetterModel.model("whackentio")
-                                .map(r -> r.getOrCreate(BukkitAdapter.adapt(w))) //Gets or creates entity tracker by this renderer to some entity.
-                                .orElse(null);
                         player.sendMessage("§6¡Has invocado a " + name + ", un Guaka legendario! §c(300 HP)");
                     }
                     else {
