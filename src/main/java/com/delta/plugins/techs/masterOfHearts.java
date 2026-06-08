@@ -2,6 +2,7 @@ package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
 import com.delta.plugins.items.Items;
+import com.rschao.items.weapons;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
@@ -22,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -404,7 +406,7 @@ public class masterOfHearts {
                                     hit = true;
                                     // aplicar daño: estimado para que con Prot V resulte ~7 corazones (14 HP).
                                     // Consideramos Prot V reduce ~20% -> base ~18
-                                    double baseDamage = 18.0*10;
+                                    double baseDamage = 100;
                                     try {
                                         finalClosest.damage(baseDamage, player);
                                     } catch (Throwable ignored) {}
@@ -841,7 +843,7 @@ public class masterOfHearts {
 
                         ItemStack off = p.getInventory().getItemInOffHand();
                         int level = 0;
-                        if (off != null && off.getType() != org.bukkit.Material.AIR && det != null) {
+                        if (off.getType() != Material.AIR && det != null) {
                             level = off.getEnchantmentLevel(det);
                         }
                         int repeats = 0;
@@ -850,6 +852,10 @@ public class masterOfHearts {
                         } else {
                             repeats = (3 * level) / 2;
                             if (repeats <= 0) repeats = 1;
+                        }
+                        int uses = (off.getType() == Material.AIR) ? 0 : off.getItemMeta().getPersistentDataContainer().getOrDefault(weapons.CHKey, PersistentDataType.INTEGER, -1);
+                        if(uses < repeats && repeats > 0){
+                            repeats = uses;
                         }
                         final int times = repeats;
                         new BukkitRunnable() {
