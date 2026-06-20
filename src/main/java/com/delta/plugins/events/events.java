@@ -348,9 +348,13 @@ public class events implements Listener {
         if (victimGroups.size() == 1) {
             return;
         }
-        ShowdownScript<Boolean> scr = (ShowdownScript<Boolean>) ScriptRegistry.getScript("smp_get_pause_lives");
-        boolean b = scr.run();
-        if(b) return;
+        try {
+            ShowdownScript<Boolean> scr = (ShowdownScript<Boolean>) ScriptRegistry.getScript("smp_get_pause_lives");
+            boolean b = scr.run();
+            if(b) return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         // Buscar el siguiente abismo robable (no protegido)
         String stolenGroup = victimGroups.stream().filter(candidate -> !protectedAbysses.contains(candidate)).findFirst().orElse(null);
