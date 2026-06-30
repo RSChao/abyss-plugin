@@ -16,7 +16,6 @@ import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 
-import dev.lone.itemsadder.api.CustomEntity;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -627,37 +626,6 @@ public class events implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-            }
-        }
-    }
-
-    @EventHandler
-    void onEntityMove(PlayerLoginEvent e){
-        for(Entity entity : e.getPlayer().getNearbyEntities(20, 20, 20)){
-            if(entity instanceof LivingEntity le){
-                if(le.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)){
-                    if(CustomEntity.isCustomEntity(le)) return; // already converted
-                    String name = le.getCustomName();
-                    if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
-                        CustomEntity.convert("whacka:whackentio", le);
-                        return;
-                    }
-                    CustomEntity.convert("whacka:whacka", le);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    void onEntityMove(EntityTeleportEvent e){
-        if(e.getEntity() instanceof LivingEntity le){
-            if(le.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)){
-                String name = le.getCustomName();
-                if(name.equalsIgnoreCase("Ignaka") || name.equalsIgnoreCase("Guakarío") || name.equalsIgnoreCase("Guakabén")|| name.equalsIgnoreCase("Whackentio")){
-                    CustomEntity.convert("whacka:whackentio", le);
-                    return;
-                }
-                CustomEntity.convert("whacka:whacka", le);
             }
         }
     }

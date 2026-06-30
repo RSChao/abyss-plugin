@@ -1,7 +1,6 @@
 package com.delta.plugins.items;
 
 import com.delta.plugins.Plugin;
-import dev.lone.itemsadder.api.ItemsAdder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
