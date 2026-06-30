@@ -51,9 +51,6 @@ public class Plugin extends JavaPlugin implements Listener
   private static final Logger LOGGER=Logger.getLogger("deltaplugin");
   private static final List<String> abyssIds = new ArrayList<>();
   boolean miawzVer = false;
-    public void onLoad() {
-
-    }
 
     public void onEnable()
   {
