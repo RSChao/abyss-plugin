@@ -3,7 +3,6 @@ package com.delta.plugins.whacka;
 import com.delta.plugins.Plugin;
 import com.delta.plugins.events.PitEvents;
 import com.delta.plugins.items.Items;
-import dev.lone.itemsadder.api.CustomEntity;
 import kr.toxicity.model.api.BetterModel;
 import kr.toxicity.model.api.bukkit.platform.BukkitAdapter;
 import kr.toxicity.model.api.tracker.EntityTracker;
@@ -89,10 +88,9 @@ public class WhackaManager {
          ActiveModel model = ModelEngineAPI.createActiveModel("whacka");
          whackModel.addModel(model, true);*/
         whack.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(Integer.MAX_VALUE, 0));
-        CustomEntity.convert("whacka:whacka", whack);
-//        EntityTracker tracker = BetterModel.model("whacka")
-//                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
-//                .orElse(null);
+        EntityTracker tracker = BetterModel.model("whacka")
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
+                .orElse(null);
 
         return whack;
     }
@@ -112,10 +110,10 @@ public class WhackaManager {
         whack.getPersistentDataContainer().set(FRIEND_KEY, PersistentDataType.BOOLEAN, true);
         whack.addPotionEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 0));
         whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
-        CustomEntity.convert("whacka:whacka", whack);
-//        EntityTracker tracker = BetterModel.model("whacka")
-//                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
-//                .orElse(null);
+
+        EntityTracker tracker = BetterModel.model("whacka")
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
+                .orElse(null);
         /*ModeledEntity whackModel = ModelEngineAPI.createModeledEntity(whack);
          ActiveModel model = ModelEngineAPI.createActiveModel("whacka");
          whackModel.addModel(model, true);*/
@@ -137,10 +135,10 @@ public class WhackaManager {
         whack.getPersistentDataContainer().set(FRIEND_KEY, PersistentDataType.BOOLEAN, true);
         //whack.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(Integer.MAX_VALUE, 0));
         whack.addPotionEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 0));
-        whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));https://docs.papermc.io/misc/java-install
-        //EntityTracker tracker = BetterModel.model(modelId)
-          //      .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
-            //    .orElse(null);
+        whack.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
+        EntityTracker tracker = BetterModel.model(modelId)
+                .map(r -> r.getOrCreate(BukkitAdapter.adapt(whack))) //Gets or creates entity tracker by this renderer to some entity.
+                .orElse(null);
 
         return whack;
     }

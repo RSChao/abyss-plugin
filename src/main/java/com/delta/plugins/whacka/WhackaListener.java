@@ -7,7 +7,6 @@ import com.delta.plugins.mobs.custom.Whacka_1_12_10;
 import com.delta.plugins.techs.Whacka_abyss;
 import com.rschao.events.soulEvents;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
-import dev.lone.itemsadder.api.CustomEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,7 +76,6 @@ public class WhackaListener implements Listener {
     public void onWhackaDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         if(!(entity instanceof LivingEntity sf)) return;
-        if(CustomEntity.isCustomEntity(sf)) Bukkit.getLogger().warning("Killed a Whacka!");
         if (!sf.getPersistentDataContainer().has(Whacka_1_12_10.WHACKA_KEY)) return;
         Player killer = sf.getKiller();
         if (killer == null) {

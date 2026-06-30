@@ -86,7 +86,7 @@
             <artifactId>bettermodel</artifactId>
             <version>2.0.0</version>
             <scope>system</scope>
-            <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\BetterModel-2.0.0-paper.jar</systemPath>
+            <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\BetterModel-3.2.0-paper.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.rschao.plugins.techniqueapi</groupId>
@@ -129,12 +129,6 @@
             <version>1.21-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\fightingplusplus-1.21-SNAPSHOT.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>dev.lone</groupId>
-            <artifactId>api-itemsadder</artifactId>
-            <version>4.0.10</version>
-            <scope>provided</scope>
         </dependency>
 	</dependencies>
 	<build>
