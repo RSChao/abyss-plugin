@@ -208,7 +208,8 @@ public class Void {
                         double z = center.getZ() + dz;
 
                         // Clamp Y to world bounds
-                        y = Math.max(1, Math.min(y, world.getMaxHeight() - 2));
+                        assert world != null;
+                        y = Math.clamp(y, 1, world.getMaxHeight() - 2);
 
                         Location explLoc = new Location(world, x, y, z);
 
