@@ -61,7 +61,7 @@ public class MasterOfTrials {
                     le.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(Integer.MAX_VALUE, 0));
                 }
             }
-            player.setLevel(xp-1);
+            player.setLevel(player.getLevel() - Integer.parseInt(xp/2 + ""));
         }
     );
 }

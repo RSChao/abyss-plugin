@@ -426,7 +426,7 @@ public class masterOfHearts {
     );
 
     // --- Estado y utilidades para la técnica ultimate ---
-    private static final String ULT_ID = "ultimate_cataclysm";
+    private static final String ULT_ID = "heart_atomization";
     private static final Map<UUID, Integer> phase = new ConcurrentHashMap<>(); // 1=awaiting number,2=expanding,3=awaiting reactivation
     private static final Map<UUID, Integer> targetRadius = new ConcurrentHashMap<>();
     private static final Map<UUID, BukkitTask> particleTasks = new ConcurrentHashMap<>();
