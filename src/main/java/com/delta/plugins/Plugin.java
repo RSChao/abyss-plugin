@@ -7,6 +7,7 @@ import com.delta.plugins.commands.*;
 import com.delta.plugins.darkworld.DarkWorldEvents;
 import com.delta.plugins.darkworld.DarkWorldRegistry;
 import com.delta.plugins.events.PitEvents;
+import com.delta.plugins.events.TechFlagEvents;
 import com.delta.plugins.events.specialEvents.DeltaGraveEvent;
 import com.delta.plugins.events.specialEvents.QuestionmarkAbyss;
 import com.delta.plugins.items.Items;
@@ -159,7 +160,7 @@ public class Plugin extends JavaPlugin implements Listener
   }
 
   static void initTechniques(){
-
+      Creator_of_Showdown.register();
       assasin.registerTechniques();
       berserker.registerTechniques();
       assaultant.registerTechniques();
@@ -203,6 +204,7 @@ public class Plugin extends JavaPlugin implements Listener
       setAbyss.command.register();
       // Registrar el nuevo comando que da todas las abyss ID
       setAbyss.commandAll.register();
+      setAbyss.commandAllItems.register();
       reload.command.register();
       givePureHeart.command.register();
       removeAbyss.command.register();
@@ -236,6 +238,7 @@ public class Plugin extends JavaPlugin implements Listener
       getServer().getPluginManager().registerEvents(new com.delta.plugins.events.BossEvents(), this);
       getServer().getPluginManager().registerEvents(new com.delta.plugins.darkworld.DarkWorldEvents(), this);
       getServer().getPluginManager().registerEvents(new com.delta.plugins.events.techEvents.DestinyBondEvents(), this);
+      getServer().getPluginManager().registerEvents(new com.delta.plugins.events.TechFlagEvents(), this);
       Bukkit.getScheduler().scheduleSyncDelayedTask(this, DarkWorldEvents::runDarkWorldParticles); // 20 ticks = 1-second delay
       Bukkit.getScheduler().scheduleSyncDelayedTask(this, () ->{
           getServer().getPluginManager().registerEvents(new DeltaGraveEvent(), this);

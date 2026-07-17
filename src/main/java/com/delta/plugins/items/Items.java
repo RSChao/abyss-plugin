@@ -147,8 +147,12 @@ public class Items {
         if(id.equals("whacka_abyss")){
             return rainbowWhackaBump();
         }
+        if(id.equals("creator_of_showdown")){
+            return creatorsEmblem();
+        }
         ItemStack item = new ItemStack(Material.GUNPOWDER);
         ItemMeta meta = item.getItemMeta();
+        assert meta != null;
         meta.setEnchantmentGlintOverride(true);
         meta.setMaxStackSize(1);
         meta.getPersistentDataContainer().set(
@@ -451,6 +455,25 @@ public class Items {
                 org.bukkit.persistence.PersistentDataType.STRING, "whacka_abyss"
         );
         meta.setItemModel(NamespacedKey.minecraft("whacka_bump_rainbow"));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack creatorsEmblem() {
+        ItemStack item = new ItemStack(Material.GUNPOWDER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setEnchantmentGlintOverride(true);
+        meta.setDisplayName(ChatColor.DARK_GRAY + "Creator's Emblem");
+        meta.setLore(java.util.Arrays.asList(
+                ChatColor.GRAY + "A relic from a time of creation.",
+                ChatColor.GOLD + "It is considered a divine artifact.",
+                ChatColor.DARK_RED + (ChatColor.BOLD + "Abyss ID: creator_of_showdown")
+        ));
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(Plugin.getPlugin(Plugin.class), "abyss_id"),
+                org.bukkit.persistence.PersistentDataType.STRING, "creator_of_showdown"
+        );
+        meta.setItemModel(NamespacedKey.minecraft("emblem_creator"));
         item.setItemMeta(meta);
         return item;
     }
