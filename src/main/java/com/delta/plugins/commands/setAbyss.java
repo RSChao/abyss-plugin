@@ -1,11 +1,13 @@
 package com.delta.plugins.commands;
 
+import com.delta.plugins.items.Items;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument.OnePlayer;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Item;
 
 import java.util.List;
 
@@ -78,5 +80,25 @@ public class setAbyss {
                 com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).reloadConfig();
                 player.sendMessage("Added " + added + " abyss IDs to " + targetPlayer.getName());
                 targetPlayer.sendMessage("You have been given " + added + " abyss group ids.");
+            });
+    // Nuevo comando: giveallabyss - añade todas las Abyss IDs registradas al jugador objetivo
+    public static CommandAPICommand commandAllItems = new CommandAPICommand("containerall")
+            .withArguments(new OnePlayer("player"))
+            .executesPlayer((player, args) -> {
+                org.bukkit.entity.Player targetPlayer = (org.bukkit.entity.Player) args.get(0);
+                if (targetPlayer == null) {
+                    player.sendMessage("Invalid player specified.");
+                    return;
+                }
+                FileConfiguration config = com.delta.plugins.Plugin.getPlugin(com.delta.plugins.Plugin.class).getConfig();
+                List<String> groupIds = config.getStringList(targetPlayer.getName() + ".groupids");
+                List<String> abyssIds = TechRegistry.getRegisteredFruitIds();
+                for (String id : abyssIds) {
+                    if (!groupIds.contains(id)) {
+                        groupIds.add(id);
+                        Item i = targetPlayer.getWorld().dropItemNaturally(targetPlayer.getLocation(), Items.abyssContainer(id));
+                        i.setPickupDelay(0);
+                    }
+                }
             });
 }
