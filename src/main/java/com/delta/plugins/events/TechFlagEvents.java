@@ -25,10 +25,16 @@ public class TechFlagEvents implements Listener {
     public static final Map<UUID, Boolean> kageTechBans = new HashMap<>();
     public static final Map<UUID, Boolean> koritsuTargets = new HashMap<>();
     public static final Map<UUID, UUID> aiTargets = new HashMap<>();
+    public static final Map<UUID, Boolean> techFullBans = new HashMap<>();
 
 
     @EventHandler
     void onTechUse(TechniqueRunEvent ev){
+        if(techFullBans.containsKey(ev.getPlayer().getUniqueId()) && techFullBans.get(ev.getPlayer().getUniqueId())){
+            ev.setCancelled(true);
+            hotbarMessage.sendHotbarMessage(ev.getPlayer(), "§7You are banned from using techniques.");
+            return;
+        }
         if(!kageTechBans.getOrDefault(ev.getPlayer().getUniqueId(), false)) return;
         boolean cancelled = false;
         String id = ev.getTechnique().getId();

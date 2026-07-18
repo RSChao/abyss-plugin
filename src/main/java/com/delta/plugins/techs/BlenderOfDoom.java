@@ -1,6 +1,7 @@
 package com.delta.plugins.techs;
 
 import com.delta.plugins.Plugin;
+import com.delta.plugins.events.TechFlagEvents;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
@@ -8,7 +9,9 @@ import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
@@ -103,9 +106,8 @@ public class BlenderOfDoom {
                                     if (targetForEffects == null || !targetForEffects.isValid()) return;
                                     // Darkness for 30s, Nausea (Confusion) level 2 for 10s, Slowness 255 for 5s
                                     targetForEffects.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.DARKNESS, 20 * 30, 0));
-                                    targetForEffects.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.CONFUSION, 20 * 10, 1));
-                                    // large amplifier for near-immobilization
-                                    targetForEffects.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SLOW, 20 * 5, 254));
+                                    targetForEffects.addPotionEffect(new org.bukkit.potion.PotionEffect(PotionEffectType.NAUSEA, 20 * 10, 1));
+                                    targetForEffects.addPotionEffect(new org.bukkit.potion.PotionEffect(PotionEffectType.SLOWNESS, 20 * 5, 254));
                                 }, 1L);
                             }
                         }
@@ -116,7 +118,12 @@ public class BlenderOfDoom {
 
                             // After the circle ends: placeholder runnable and heal the caster
                             Bukkit.getScheduler().runTask(plugin, () -> {
-                                // TODO: tech ban funni
+                                for(LivingEntity e : targets){
+                                    TechFlagEvents.techFullBans.put(e.getUniqueId(), true);
+                                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                        TechFlagEvents.techFullBans.put(e.getUniqueId(), false);
+                                    }, 20*30L); // 30 seconds ban
+                                }
                                 try {
                                     if (caster != null && caster.isValid()) {
                                         double max = caster.getMaxHealth();
