@@ -196,6 +196,9 @@ public class Plugin extends JavaPlugin implements Listener
       OriginAider.register();
       combat_will.register();
       Void.register();
+      if(BlenderOfDoom.getGroup() != "default_group") {
+          BlenderOfDoom.register(BlenderOfDoom.getGroup());
+      }
   }
 
   static void initCommands(){

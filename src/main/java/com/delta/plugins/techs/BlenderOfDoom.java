@@ -137,4 +137,19 @@ public class BlenderOfDoom {
 
             }, startDelay);
         });
+
+
+
+    public static void saveGroup(String group) {
+        // Save the group to the config
+        org.bukkit.configuration.file.FileConfiguration config = plugin.getConfig();
+        config.set("blender_groups", group);
+        plugin.saveConfig();
+    }
+
+    public static String getGroup() {
+        // Retrieve the group from the config
+        org.bukkit.configuration.file.FileConfiguration config = plugin.getConfig();
+        return config.getString("blender_groups", "default_group");
+    }
 }
