@@ -7,7 +7,6 @@ import com.delta.plugins.commands.*;
 import com.delta.plugins.darkworld.DarkWorldEvents;
 import com.delta.plugins.darkworld.DarkWorldRegistry;
 import com.delta.plugins.events.PitEvents;
-import com.delta.plugins.events.TechFlagEvents;
 import com.delta.plugins.events.specialEvents.DeltaGraveEvent;
 import com.delta.plugins.events.specialEvents.QuestionmarkAbyss;
 import com.delta.plugins.items.Items;
@@ -24,13 +23,10 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import com.fren_gor.ultimateAdvancementAPI.util.CoordAdapter;
-import com.rschao.plugins.showdowncore.showdownCore.api.enchantment.definition.EasyEnchant;
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Allay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -234,6 +230,7 @@ public class Plugin extends JavaPlugin implements Listener
       SetPlayerY.setLowestY();
       SetGraveCommand.register();
       GiveRainbowBump.register();
+      RegisterBlender.cnd.register();
   }
 
   void initEvents(){
