@@ -17,10 +17,7 @@ import com.rschao.plugins.techniqueAPI.tech.selectors.TargetSelectors;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -145,6 +142,7 @@ public class events implements Listener {
             else{
                 Technique technique = TechRegistry.getAllTechniques(groupId).get(techIndex);
                 if(technique == null) return;
+                p.playSound(p, "abyss_cast", SoundCategory.MASTER, 1, 1);
                 technique.use(new TechniqueContext(p, ev.getItem()));
             }
         }
@@ -300,15 +298,6 @@ public class events implements Listener {
         String techName = TechniqueNameManager.getDisplayName(player, techs.get(techIndex));
         hotbarMessage.sendHotbarMessage(player, "Technique: " + techName + " (Abyss " + groupId + ")");
     }
-    /*@EventHandler
-    void onPreCast(PreCastEvent event) {
-        if(event.getSpell().getName().equals("Whacka Summoner")){
-            Whacka_Summon.summonWhackaTech.use(event.getMage().getPlayer(), event.getMage().getActiveWand().getItem());
-        }
-        if(event.getSpell().getName().equals("Pure Heart laser")){
-            TechRegistry.getById("pureheart_laser").use(event.getMage().getPlayer(), event.getMage().getActiveWand().getItem());
-        }
-    }*/
 
     @EventHandler (priority = EventPriority.LOWEST)
     void onPlayerOmniNegate(EntityDamageByEntityEvent ev){

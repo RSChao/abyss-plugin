@@ -65,7 +65,7 @@ public class BlenderOfDoom {
                 // Spinner runnable: teleports targets in a circle for ~20 seconds
                 new org.bukkit.scheduler.BukkitRunnable() {
                     int ticks = 0;
-                    final int durationTicks = 20 * 20; // 20 seconds
+                    final int durationTicks = 20 * 15; // 20 seconds
                     final double radius = 10.0;
                     final double angularSpeed = 1.0; // radians per tick (fast)
 
@@ -94,7 +94,7 @@ public class BlenderOfDoom {
                         }
 
                         // Every 5 seconds (100 ticks) deal massive damage and then apply effects the next tick
-                        if (ticks % 100 == 0) {
+                        if (ticks % 30 == 0) {
                             for (org.bukkit.entity.LivingEntity e : centers.keySet()) {
                                 if (e == null || !e.isValid()) continue;
                                 try {

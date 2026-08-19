@@ -59,6 +59,7 @@ public class ItemAnimations {
     }
 
     public static void disablePureHeartAnimation() {
+        if(spawnedItems == null) return;
         for(Item item : spawnedItems) {
             item.remove();
         }

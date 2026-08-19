@@ -1,6 +1,9 @@
 package com.delta.plugins.commands;
 
 import com.delta.plugins.Plugin;
+import com.rschao.plugins.showdowncore.showdownCore.api.runnables.ShowdownScript;
+import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
+import com.rschao.plugins.showdowncore.showdownCore.gui.recipe.ActionRegistry;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument.OnePlayer;
 import org.bukkit.entity.Player;
@@ -19,11 +22,10 @@ public class Copyplayer {
 
     // Mapa: copiaUuid -> originalUuid
     public static final Map<UUID, UUID> copyOriginalMap = new ConcurrentHashMap<>();
-    private static boolean listenersRegistered = false;
 
     public static void register() {
         CommandAPICommand cmd = new CommandAPICommand("copyplayer")
-                .withPermission("delta.admin")
+                .withPermission("delta.playercopy")
                 .withArguments(new OnePlayer("player"))
                 .executes((sender, args) -> {
                     if (args.count() < 1) {
@@ -61,33 +63,14 @@ public class Copyplayer {
                     List<String> abyss = Plugin.getPlugin(Plugin.class).getConfig().getStringList(target.getName() + ".groupids");
                     Plugin.getPlugin(Plugin.class).getConfig().set(player.getName() + ".groupids", abyss);
 
-                    // Registrar relación copy -> original para detección posterior
-                    copyOriginalMap.put(player.getUniqueId(), target.getUniqueId());
-
-                    // Registrar listeners la primera vez que se ejecuta el comando (o al iniciar)
-                    if (!listenersRegistered) {
-                        Plugin plugin = Plugin.getPlugin(Plugin.class);
-                        PluginManager pm = plugin.getServer().getPluginManager();
-                        pm.registerEvents(new CopyListener(), plugin);
-                        listenersRegistered = true;
+                    ShowdownScript scr = ScriptRegistry.getScript("events:copyplayer");
+                    if(scr != null) {
+                        scr.setArgs(player, target);
+                        scr.run();
+                    } else {
+                        player.sendMessage("No script found for copyplayer.");
                     }
                 });
         cmd.register();
-    }
-
-    // Listener interno para manejar desconexiones y muertes
-    private static class CopyListener implements Listener {
-
-        @EventHandler
-        public void onPlayerQuit(PlayerQuitEvent e) {
-            // Si una copia sale del servidor, borramos su marca: ya no cuenta
-            copyOriginalMap.remove(e.getPlayer().getUniqueId());
-        }
-
-        @EventHandler
-        public void onPlayerKick(PlayerKickEvent e) {
-            // Igual que quit
-            copyOriginalMap.remove(e.getPlayer().getUniqueId());
-        }
     }
 }

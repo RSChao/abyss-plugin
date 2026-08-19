@@ -35,7 +35,7 @@ public class Heart_purity extends BaseAdvancement implements HiddenVisibility {
   }
 
   public Heart_purity(Advancement parent, float x, float y) {
-    super(KEY.getKey(), new AdvancementDisplay(icon, "Corazón de la Pureza", AdvancementFrameType.CHALLENGE, true, true, x, y , "Adquiere el corazón de la pureza,", "representación del amor y la bondad.", "Con él, resistirás el poder", "nacido del abismo"), parent, 1);
+    super(KEY.getKey(), new AdvancementDisplay(icon, "Purity Heart", AdvancementFrameType.CHALLENGE, true, true, x, y , "Adquiere el corazón de la pureza,", "representación del amor y la bondad.", "Con él, resistirás el poder", "nacido del abismo"), parent, 1);
     registerEvent(PlayerPickupItemEvent.class,
             event -> {
               if(event.getItem() == null) return;
@@ -51,17 +51,6 @@ public class Heart_purity extends BaseAdvancement implements HiddenVisibility {
 
     @Override
     public void giveReward(Player player) {
-        FileConfiguration config = Plugin.getPlugin(Plugin.class).getConfig();
-        List<String> abyss = config.getStringList(player.getName() + ".groupids");
-        if(abyss.contains("devourer")){
-            for(int i = 0; i<abyss.size();i++){
-                if(abyss.get(i).equals("devourer")){
-                    abyss.set(i, "redeemed");
-                }
-            }
-        }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user "+player.getName()+" parent add pure_hearts");
-        if(events.hasChaosHeart(player)) return;
-        player.sendMessage(ChatColor.GOLD + "Sabía que harías lo correcto. Me alegro de que así sea, héroe de todos los mundos.");
     }
 }

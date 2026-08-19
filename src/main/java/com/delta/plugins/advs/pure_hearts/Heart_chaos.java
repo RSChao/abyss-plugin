@@ -35,7 +35,7 @@ public class Heart_chaos extends BaseAdvancement implements HiddenVisibility {
   }
 
   public Heart_chaos(Advancement parent, float x, float y) {
-    super(KEY.getKey(), new AdvancementDisplay(icon, "Corazón del Caos", AdvancementFrameType.CHALLENGE, true, true, x, y , "Adquiere el corazón del Caos,", "representación del odio y el vacío.", "Con él, el poder nacido del abismo se", "verá potenciado"), parent, 1);
+    super(KEY.getKey(), new AdvancementDisplay(icon, "§0§lChaos Heart", AdvancementFrameType.CHALLENGE, true, true, x, y , "Adquiere el corazón del Caos,", "representación del odio y el vacío.", "Con él, el poder nacido del abismo se", "verá potenciado"), parent, 1);
     registerEvent(PlayerPickupItemEvent.class,
             event -> {
 
@@ -49,10 +49,4 @@ public class Heart_chaos extends BaseAdvancement implements HiddenVisibility {
 
             });
   }
-
-    @Override
-    public void giveReward(Player player) {
-        if(events.hasPurityHeart(player)) return;
-        player.sendMessage("Has salvado todos los mundos, sólo para convertirte en la nueva amenaza. Mereció la pena?");
-    }
 }

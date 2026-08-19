@@ -1,5 +1,6 @@
 package com.delta.plugins.events;
 
+import com.delta.plugins.techs.ShowdownMan;
 import com.rschao.plugins.techniqueAPI.event.TechniquePreRunEvent;
 import com.rschao.plugins.techniqueAPI.event.TechniqueRunEvent;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
@@ -8,6 +9,7 @@ import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import com.rschao.plugins.techniqueAPI.tech.util.PlayerTechniqueManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +28,8 @@ public class TechFlagEvents implements Listener {
     public static final Map<UUID, Boolean> koritsuTargets = new HashMap<>();
     public static final Map<UUID, UUID> aiTargets = new HashMap<>();
     public static final Map<UUID, Boolean> techFullBans = new HashMap<>();
+    public static final Map<UUID, Boolean> patienceDrain = new HashMap<>();
+    public static final Map<UUID, Integer> yellowHits = new HashMap<>();
 
 
     @EventHandler
@@ -143,5 +147,31 @@ public class TechFlagEvents implements Listener {
                 aiTargets.remove(target);
             }
         }
+    }
+
+    @EventHandler
+    void jaronaRegen(EntityRegainHealthEvent ev){
+        if(ev.getEntity() instanceof Player p){
+            for(Entity e : p.getNearbyEntities(10, 10, 10)){
+                if(e instanceof Player pl){
+                    if(patienceDrain.getOrDefault(pl.getUniqueId(), false)){
+                        double regen = ev.getAmount()/2;
+                        pl.setHealth(pl.getHealth()+regen);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    void yellowHit(EntityDamageByEntityEvent ev){
+        if(!yellowHits.containsKey(ev.getDamager().getUniqueId())) return;
+        yellowHits.put(ev.getDamager().getUniqueId(), yellowHits.get(ev.getDamager().getUniqueId()) + 1);
+    }
+    @EventHandler
+    void jaronaTechs(TechniquePreRunEvent ev){
+        if(TechRegistry.getAllTechniques("showdown_man").contains(ev.getTechnique()) && ShowdownMan.jaronaUltis.getOrDefault(ev.getPlayer(), false)) {
+            CooldownManager.removeCooldown(ev.getPlayer(), ev.getTechnique().getId());
+        };
     }
 }

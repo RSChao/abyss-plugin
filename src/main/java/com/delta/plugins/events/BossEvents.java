@@ -34,9 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BossEvents implements Listener {
-
-    public static Map<Player, Boolean> isSheathTechOn = new HashMap<>();
-    public static Map<Player, Boolean> isGlitchTechOn = new HashMap<>();
     @EventHandler
     void onBossChange(BossChangeEvent ev){
         String playerName = ev.getBossPlayer().getName();
@@ -82,16 +79,5 @@ public class BossEvents implements Listener {
         Plugin.getPlugin(Plugin.class).getConfig().set("Doritospro.groupids", abyss);
         Plugin.getPlugin(Plugin.class).saveConfig();
         Plugin.getPlugin(Plugin.class).reloadConfig();
-    }
-
-
-    @EventHandler
-    void onPlayerGlitchTech(EntityDamageByEntityEvent e){
-        if (!(e.getDamager() instanceof Player damager)) return;
-        if (!isGlitchTechOn.getOrDefault(damager, false)) return;
-        Entity target = e.getEntity();
-        if (!(target instanceof LivingEntity le)) return;
-        le.addPotionEffect(PotionEffectType.BLINDNESS.createEffect(20*20, 234));
-        le.addPotionEffect(PotionEffectType.SLOWNESS.createEffect(20*20, 234));
     }
 }

@@ -609,7 +609,7 @@ public class PitEvents implements Listener {
         if(ev.getEntity().getPersistentDataContainer().has(new NamespacedKey("tower", "floor"))){
             ev.setCancelled(true);
             try{
-                ev.getEntity().remove();
+                if(ev.getEntity().isValid() && !ev.getEntity().isDead()) ev.getEntity().remove();
             } catch (Exception e){
                 e.printStackTrace();
             }

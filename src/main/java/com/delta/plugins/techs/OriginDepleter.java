@@ -46,18 +46,18 @@ public class OriginDepleter {
         TechRegistry.registerTechnique(TECH_ID, breath);
         TechRegistry.registerTechnique(TECH_ID, chunk);
         TechRegistry.registerTechnique(TECH_ID, slashes);
+        TechRegistry.registerTechnique(TECH_ID, present);
+        TechRegistry.registerTechnique(TECH_ID, ultimateTechnique);
+        TechRegistry.registerTechnique(TECH_ID, chaos);
         Bukkit.getPluginManager().registerEvents(new UltimateListener(), plugin);
     }
     private static boolean registeredP4Techs = false;
     public static void addP4Techs(){
         if(registeredP4Techs) return;
-        TechRegistry.registerTechnique(TECH_ID, present);
-        TechRegistry.registerTechnique(TECH_ID, ultimateTechnique);
-        TechRegistry.registerTechnique(TECH_ID, chaos);
         registeredP4Techs = true;
     }
 
-    static Technique breath = new Technique("breath", "Oblivions breath", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(10), List.of("Heals and gives Origin 1 extra pop.")), TargetSelectors.self(), (ctx, token) ->{
+    static Technique breath = new Technique("breath", "Oblivions breath", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(10), List.of("Gives Origin 1 extra pop.")), TargetSelectors.self(), (ctx, token) ->{
         for(Player p : Bukkit.getOnlinePlayers()){
             if(soulEvents.hasSoul(p, 19)){
                 ItemStack item = p.getInventory().getItemInOffHand();
@@ -169,7 +169,7 @@ public class OriginDepleter {
 
                 tick++;
                 if (tick > totalTicks) {
-                    // Fin del periodo: aplicar 100 de daño base a cada objetivo y finalizar
+                    // Fin del periodo: aplicar 1000 de daño base a cada objetivo y finalizar
                     for (LivingEntity t : targets) {
                         if (t == null || !t.isValid()) continue;
                         try { t.damage(1000.0, player); } catch (Throwable ignored) {}

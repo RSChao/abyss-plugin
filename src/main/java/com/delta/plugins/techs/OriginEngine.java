@@ -37,18 +37,15 @@ public class OriginEngine {
 
     static Technique deathRavenEye = new Technique("death_ravens_eye", "Death Raven's Eye", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(8), List.of("Gains the ability to use ultimate techniques for 15 seconds.")), TargetSelectors.self(), (techUser, target) -> {
         List<Technique> ultis = new ArrayList<>();
-        for(String fruit: Plugin.getAllFruitIDs()){
-            for(Technique tech : TechRegistry.getUltimateTechniques(fruit)) {
-                ultis.add(tech);
-            }
-        }
         String techName = "";
-        for(String fruit: com.delta.plugins.Plugin.getAllAbyssIDs()){
-            for(Technique tech : TechRegistry.getUltimateTechniques(fruit)) {
-                ultis.add(tech);
-                techName = TechniqueNameManager.getDisplayName(techUser.caster(), tech);
-            }
+        for(String fruit: TechRegistry.getRegisteredFruitIds()){
+            ultis.addAll(TechRegistry.getUltimateTechniques(fruit));
         }
+
+        Random rand = new Random();
+        Technique randomUlti = ultis.get(rand.nextInt(ultis.size()));
+        techName = TechniqueNameManager.getDisplayName(techUser.caster(), randomUlti);
+
         List<String> dialogue = List.of(
                 "The shadows of oblivion grant you power...",
                 "Embrace the darkness within...",
@@ -64,8 +61,6 @@ public class OriginEngine {
             }, 2*i);
         }
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            Random rand = new Random();
-            Technique randomUlti = ultis.get(rand.nextInt(ultis.size()));
             randomUlti.getAction().execute(techUser, target);
         }, 2+(2* dialogue.size()));
     });
@@ -81,12 +76,13 @@ public class OriginEngine {
 
     });
 
-    static Technique oblivionRestrainer = new Technique("oblivion_restrainer", "Oblivion Restrainer", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(12), List.of("If the target is not in Void Mode, deals massive damage.")), TargetSelectors.self(), (techUser, target) -> {
+    static Technique oblivionRestrainer = new Technique("oblivion_restrainer", "Oblivion Restrainer", new TechniqueMeta(false, cooldownHelper.minutesToMiliseconds(12), List.of("If the target is not a Void Soul user, sets cooldown.")), TargetSelectors.self(), (techUser, target) -> {
         Player player = techUser.caster();
         for(Player p: techUser.caster().getWorld().getPlayers()) {
             if(p != techUser.caster() && p.getLocation().distance(techUser.caster().getLocation()) < 50) {
                 if(soulEvents.hasSoul(p, 19)) continue;
                 if(p.equals(player)) return;
+                if(p.getWorld() != player.getWorld()) continue;
                 if(p.getLocation().distance(player.getLocation())>30) return;
                 int cooldown = ((new Random()).nextInt(60, 81))*1000;
                 for(String id :com.rschao.plugins.fightingpp.Plugin.getAllFruitIDs()){

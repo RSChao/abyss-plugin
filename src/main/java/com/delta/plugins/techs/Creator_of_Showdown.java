@@ -5,6 +5,9 @@ import com.delta.plugins.events.TechFlagEvents;
 import com.delta.plugins.mobs.MobManager;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.TechniqueMeta;
+import com.rschao.plugins.techniqueAPI.tech.awakening.Awakening;
+import com.rschao.plugins.techniqueAPI.tech.cancel.SimpleCancellationToken;
+import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
 import com.rschao.plugins.techniqueAPI.tech.cooldown.cooldownHelper;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
@@ -355,18 +358,23 @@ public class Creator_of_Showdown {
                             caster.sendMessage("§a[Power of Two] §7Using technique: " + t.getDisplayName());
                             if(!CooldownManager.isOnCooldown(caster, t.getId())){
                                 Bukkit.getScheduler().runTask(plugin, () -> {
-
-                                    t.use(caster);
-                                    if(id.equals("heart_atomization")){
-                                        caster.sendMessage("§a[Power of Two] §7Heart Atomization will be finalized after 10 seconds.");
-                                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                            t.use(caster);
-                                        }, 10*20L);
-                                        if(id.equals("roaringgowhacka")){
-                                            caster.sendMessage("§a[Power of Two] §7Roaring Gowhacka will be finalized after 30 seconds.");
+                                    if(CooldownManager.isOnCooldown(caster, t.getId())){
+                                        caster.sendMessage("§c[Power of Two] §7Technique on cooldown: " + t.getDisplayName());
+                                    }
+                                    else {
+                                        t.getAction().execute(new TechniqueContext(caster), new SimpleCancellationToken());
+                                        if(id.equals("heart_atomization")){
+                                            caster.sendMessage("§a[Power of Two] §7Heart Atomization will be finalized after 10 seconds.");
                                             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                                                 t.use(caster);
-                                            }, 30*20L);
+                                            }, 10*20L);
+                                            if(id.equals("roaringgowhacka")){
+                                                caster.sendMessage("§a[Power of Two] §7Roaring Gowhacka will be finalized after 30 seconds.");
+                                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                                    t.use(caster);
+                                                }, 30*20L);
+                                            }
+                                            t.use(caster);
                                         }
                                     }
                                 });

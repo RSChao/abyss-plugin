@@ -31,9 +31,7 @@ public class Void {
     static final Plugin plugin = Plugin.getPlugin(Plugin.class);
 
     public static void register() {
-        Bukkit.getPluginManager().registerEvents(new Events(), plugin);
 
-        TechRegistry.registerTechnique(id, voidTech);
     }
 
 
@@ -232,15 +230,4 @@ public class Void {
         }.runTaskTimer(plugin, 0L, 2L); // charge particles every 2 ticks
 
     });
-
-    static class Events implements Listener{
-
-        @EventHandler(ignoreCancelled = true)
-        void onPlayerChat(PlayerChatEvent ev){
-            if(ev.getMessage().contains(voidTech.getDisplayName()) && ev.getPlayer().isOp() && ev.getPlayer().hasPermission("showdown.void_termina")){
-                Player p = ev.getPlayer();
-                voidTech.use(new TechniqueContext(p));
-            }
-        }
-    }
 }

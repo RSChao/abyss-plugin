@@ -192,6 +192,7 @@ public class Plugin extends JavaPlugin implements Listener
       OriginAider.register();
       combat_will.register();
       Void.register();
+      ShowdownMan.register();
       if(BlenderOfDoom.getGroup() != "default_group") {
           BlenderOfDoom.register(BlenderOfDoom.getGroup());
       }
@@ -219,6 +220,7 @@ public class Plugin extends JavaPlugin implements Listener
       setAbyss.commandAll.register();
       StartTower.command.register();
       StartTower.nextFloor.register();
+      StartTower.nextFloorPublic.register();
       StartTower.resetfloor.register();
       StartTower.addMobSpot.register();
       StartTower.setTowerSpawn.register();

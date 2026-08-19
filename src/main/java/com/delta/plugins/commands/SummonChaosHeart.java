@@ -12,6 +12,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -83,6 +84,9 @@ public class SummonChaosHeart {
 
                     Set<Block> removedBlocks = new HashSet<>();
                     List<Item> spawnedHearts = new ArrayList<>();
+                    BukkitRunnable[] monitorTask = new BukkitRunnable[1];
+                    Item[] chaosItem = new Item[1];
+                    BukkitRunnable[] particleTask = new BukkitRunnable[1];
 
                     // Secuencia de aparición de corazones
                     new BukkitRunnable() {
@@ -90,78 +94,78 @@ public class SummonChaosHeart {
                         @Override
                         public void run() {
                             if (i >= heartPosMap.size()) {
-                                // Esperar 30 ticks y luego aparecer el Chaos Heart animado
+                                // Esperar 20 ticks antes de iniciar el monitor de distancia
                                 new BukkitRunnable() {
                                     @Override
                                     public void run() {
-                                        Location chaosStart = baseLoc.clone().add(0, -2, 0);
                                         Location chaosEnd = baseLoc.clone();
-                                        chaosStart.setX(chaosStart.getBlockX() + 0.5);
-                                        chaosStart.setY(chaosStart.getBlockY() + 0.5);
-                                        chaosStart.setZ(chaosStart.getBlockZ() + 0.5);
                                         chaosEnd.setX(chaosEnd.getBlockX() + 0.5);
                                         chaosEnd.setY(chaosEnd.getBlockY() + 0.5);
                                         chaosEnd.setZ(chaosEnd.getBlockZ() + 0.5);
 
-                                        ItemStack chaosHeart = com.rschao.items.Items.ChaosHeart.clone();
-                                        Item chaosItem = chaosStart.getWorld().dropItem(chaosStart, chaosHeart);
-                                        chaosItem.setGravity(false);
-                                        chaosItem.setVelocity(new org.bukkit.util.Vector(0, 0.1, 0));
-
-
-                                        new BukkitRunnable() {
-                                            int tick = 0;
+                                        monitorTask[0] = new BukkitRunnable() {
+                                            boolean triggered = false;
                                             @Override
                                             public void run() {
-                                                if (!chaosItem.isValid() || chaosItem.isDead()) {
-                                                    this.cancel();
-                                                    return;
-                                                }
-                                                Location loc = chaosItem.getLocation();
-                                                loc.getWorld().spawnParticle(Particle.DUST, loc.clone().add(0, 0.2, 0), 10, Math.random()/2, Math.random()/2, Math.random()/2, new Particle.DustOptions(Color.BLACK, 1));
-                                            }
-                                        }.runTaskTimer(Plugin.getPlugin(Plugin.class), 0, 1);
+                                                double dist = player.getLocation().distance(baseLoc);
+                                                if (!triggered && dist <= 6) {
+                                                    triggered = true;
+                                                    // Animar subida en 40 ticks (2 segundos)
+                                                    Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () ->{
+                                                        chaosEnd.getWorld().spawnParticle(Particle.FLASH, chaosEnd, 20, 0.5, 0.5, 0.5, 0, Color.BLACK);
+                                                        Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class), () ->{
+                                                            chaosEnd.getWorld().spawnParticle(Particle.FLASH, chaosEnd, 20, 0.5, 0.5, 0.5, 0, Color.BLACK);
 
-                                        // Animar subida en 40 ticks (2 segundos)
-                                        new BukkitRunnable() {
-                                            int tick = 0;
-                                            @Override
-                                            public void run() {
-                                                if (!chaosItem.isValid() || chaosItem.isDead()) {
-                                                    this.cancel();
-                                                    return;
-                                                }
-                                                double progress = Math.min(1.0, tick / 40.0);
-                                                double newY = chaosStart.getY() + (chaosEnd.getY() - chaosStart.getY()) * progress;
-                                                chaosItem.teleport(new Location(
-                                                        chaosStart.getWorld(),
-                                                        chaosStart.getX(),
-                                                        newY,
-                                                        chaosStart.getZ()
-                                                ));
-                                                tick++;
-                                                if (tick > 40) {
-                                                    // Flotar en la posición final
-                                                    chaosItem.teleport(chaosEnd);
-                                                    this.cancel();
-                                                }
-                                            }
-                                        }.runTaskTimer(Plugin.getPlugin(Plugin.class), 0, 1);
+                                                            new BukkitRunnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    ItemStack chaosHeart = com.rschao.items.Items.ChaosHeart.clone();
+                                                                    chaosItem[0] = chaosEnd.getWorld().dropItem(chaosEnd, chaosHeart);
+                                                                    chaosItem[0].setGravity(false);
+                                                                    chaosItem[0].setVelocity(new Vector(0, 0, 0));
 
-                                        // Eliminar corazones visuales y restaurar bloques tras 5s
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                for (Item item : spawnedHearts) {
-                                                    if (item.isValid()) item.remove();
-                                                }
-                                                for (Block b : removedBlocks) {
-                                                    b.setType(Material.GRASS_BLOCK);
+                                                                    particleTask[0] = new BukkitRunnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            if (!chaosItem[0].isValid() || chaosItem[0].isDead()) {
+                                                                                this.cancel();
+                                                                                return;
+                                                                            }
+                                                                            Location loc = chaosItem[0].getLocation();
+                                                                            loc.getWorld().spawnParticle(Particle.DUST, loc.clone().add(0, 0.2, 0), 10, Math.random()/2, Math.random()/2, Math.random()/2, new Particle.DustOptions(Color.BLACK, 1));
+                                                                        }
+                                                                    };
+                                                                    particleTask[0].runTaskTimer(Plugin.getPlugin(Plugin.class), 0, 1);
+                                                                }
+                                                            }.runTaskLater(Plugin.getPlugin(Plugin.class), 20);
+                                                        }, 10);
+                                                    }, 10);
+
+                                                    // Eliminar corazones visuales y restaurar bloques tras 5s
+                                                    new BukkitRunnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            for (Item item : spawnedHearts) {
+                                                                if (item.isValid()) item.remove();
+                                                            }
+                                                        }
+                                                    }.runTaskLater(Plugin.getPlugin(Plugin.class), 100);
+                                                    this.cancel();
+                                                } else if (!triggered && dist >= 7) {
+                                                    // Cancelar secuencia, eliminar corazones y restaurar items
+                                                    for (Item item : spawnedHearts) {
+                                                        if (item.isValid()) item.remove();
+                                                    }
+                                                    for(ItemStack heart : heartMap.values()){
+                                                        player.getInventory().addItem(heart);
+                                                    }
+                                                    this.cancel();
                                                 }
                                             }
-                                        }.runTaskLater(Plugin.getPlugin(Plugin.class), 100);
+                                        };
+                                        monitorTask[0].runTaskTimer(Plugin.getPlugin(Plugin.class), 0, 10);
                                     }
-                                }.runTaskLater(Plugin.getPlugin(Plugin.class), 30);
+                                }.runTaskLater(Plugin.getPlugin(Plugin.class), 20);
                                 this.cancel();
                                 return;
                             }

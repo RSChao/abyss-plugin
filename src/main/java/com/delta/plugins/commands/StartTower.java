@@ -93,6 +93,32 @@ public class StartTower {
                     (new MobSpawner()).spawnMob(p.getWorld(), p);
                 }, 2);
             });
+    public static CommandAPICommand nextFloorPublic = new CommandAPICommand("movefloor")
+            .withArguments(new OnePlayer("player").setOptional(true))
+            .executes((sender, args) -> {
+                Player p = (Player) args.getOrDefault(0, sender instanceof Player ? (Player) sender : null);
+                if(p == null) return;
+                int amount = 1;
+
+                if(PitEvents.getFloor(p) %10 != 0 && PitEvents.getFloor(p) != 99) {
+                    p.sendMessage("No puedes avanzar de piso aún. Debes completar el piso actual.");
+                    return;
+                }
+                PitEvents.nextFloor(p);
+
+                File file = new File(Plugin.getPlugin(Plugin.class).getDataFolder(), "towerdata.yml");
+                if(!file.exists()) return;
+                FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+
+                int floor = PitEvents.getFloor(p);
+                Location configured = config.getLocation("tower." + floor + ".spawn");
+                Location location = configured != null ? configured : p.getLocation();
+
+                p.teleport(location);
+                Bukkit.getScheduler().runTaskLater(Plugin.getPlugin(Plugin.class),() ->{
+                    (new MobSpawner()).spawnMob(p.getWorld(), p);
+                }, 2);
+            });
     public static CommandAPICommand resetfloor = new CommandAPICommand("resetfloor")
             .withArguments(new OnePlayer("player"))
             .withPermission("tower.admin")

@@ -417,7 +417,7 @@ public class chaosWielder {
                     Location spawnLoc = c.clone().add(x, 0, z);
                     spawnLoc.getWorld().spawnParticle(Particle.DUST, spawnLoc, 1, 0, 0, 0, 0, dust);
                 }
-            }, (long) s); // s ticks después de la invocación de la oleada
+            }, s); // s ticks después de la invocación de la oleada
         }
     }
 
