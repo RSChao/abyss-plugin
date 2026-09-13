@@ -1,6 +1,5 @@
 package com.delta.plugins.techs;
 
-import com.delta.plugins.Plugin;
 import com.delta.plugins.items.Items;
 import com.rschao.items.weapons;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -135,7 +134,6 @@ public class masterOfHearts {
                     ticks++;
                     if (ticks > 140) { // 7 segundos de giro
                         // 4. Matar entidades vivas 20 bloques delante del jugador
-                        Location front = player.getEyeLocation().add(player.getLocation().getDirection().normalize().multiply(10));
                         Vector dir = player.getLocation().getDirection().normalize();
                         for (LivingEntity ent : player.getWorld().getLivingEntities()) {
                             if (ent == player) continue;

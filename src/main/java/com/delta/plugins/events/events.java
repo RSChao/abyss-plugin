@@ -2,8 +2,8 @@ package com.delta.plugins.events;
 
 import com.delta.plugins.Plugin;
 import com.delta.plugins.items.Items;
-import com.delta.plugins.mobs.custom.Whacka_1_12_10;
 import com.delta.plugins.techs.*;
+import com.rschao.events.soulEvents;
 import com.rschao.plugins.showdowncore.showdownCore.api.runnables.ShowdownScript;
 import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
@@ -26,12 +26,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -60,7 +58,6 @@ public class events implements Listener {
 
     @EventHandler
     void onPlayerUseHoe(PlayerInteractEvent ev){
-        Player p = ev.getPlayer();
         if(ev.getItem() == null) return;
         if(ev.getItem().getType().equals(Material.AIR)) return;
         if(!ev.getItem().isSimilar(Items.hoe())) return;
@@ -366,11 +363,14 @@ public class events implements Listener {
     }
 
     public static boolean hasPurityHeart(Player p){
+        if(soulEvents.hasSoul(p, 100)) return true;
+
         if(p.hasPermission("purehearts.reverse"))return (com.rschao.events.soulEvents.GetSoulN(p) == 66 || com.rschao.events.soulEvents.GetSecondSoulN(p) == 66);
 
         return (com.rschao.events.soulEvents.GetSoulN(p) == 30 || com.rschao.events.soulEvents.GetSecondSoulN(p) == 30);
     }
     public static boolean hasChaosHeart(Player p){
+        if(soulEvents.hasSoul(p, 100)) return true;
 
         if(p.hasPermission("purehearts.reverse"))return (com.rschao.events.soulEvents.GetSoulN(p) == 30 || com.rschao.events.soulEvents.GetSecondSoulN(p) == 30);
 
