@@ -627,6 +627,10 @@ public class MobManager {
         ItemStack boots = new ItemStack(Material.IRON_BOOTS);
         ItemStack[] armor = {boots, legs, chest, helm};
         z.getEquipment().setArmorContents(armor);
+        z.getEquipment().setChestplateDropChance(0);
+        z.getEquipment().setLeggingsDropChance(0);
+        z.getEquipment().setBootsDropChance(0);
+        z.getEquipment().setHelmetDropChance(0);
         z.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
 
         return z;
@@ -644,6 +648,10 @@ public class MobManager {
         ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
         ItemStack[] armor = {boots, legs, chest, helm};
         z.getEquipment().setArmorContents(armor);
+        z.getEquipment().setChestplateDropChance(0);
+        z.getEquipment().setLeggingsDropChance(0);
+        z.getEquipment().setBootsDropChance(0);
+        z.getEquipment().setHelmetDropChance(0);
         z.getEquipment().setItemInMainHand(new ItemStack(Material.DIAMOND_SWORD));
 
         return z;
@@ -661,6 +669,10 @@ public class MobManager {
         ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
         ItemStack[] armor = {boots, legs, chest, helm};
         z.getEquipment().setArmorContents(armor);
+        z.getEquipment().setChestplateDropChance(0);
+        z.getEquipment().setLeggingsDropChance(0);
+        z.getEquipment().setBootsDropChance(0);
+        z.getEquipment().setHelmetDropChance(0);
         z.getEquipment().setItemInMainHand(weapons.ChaoSword);
 
         return z;
@@ -678,6 +690,10 @@ public class MobManager {
         ItemStack boots = new ItemStack(Material.NETHERITE_BOOTS);
         ItemStack[] armor = {boots, legs, chest, helm};
         z.getEquipment().setArmorContents(armor);
+        z.getEquipment().setChestplateDropChance(0);
+        z.getEquipment().setLeggingsDropChance(0);
+        z.getEquipment().setBootsDropChance(0);
+        z.getEquipment().setHelmetDropChance(0);
         z.getEquipment().setItemInMainHand(new ItemStack(Material.NETHERITE_SWORD));
 
         return z;
@@ -981,6 +997,10 @@ public class MobManager {
             e.setChestplate(new ItemStack(Material.NETHERITE_CHESTPLATE));
             e.setLeggings(new ItemStack(Material.NETHERITE_LEGGINGS));
             e.setBoots(new ItemStack(Material.NETHERITE_BOOTS));
+            le.getEquipment().setChestplateDropChance(0);
+            le.getEquipment().setLeggingsDropChance(0);
+            le.getEquipment().setBootsDropChance(0);
+            le.getEquipment().setHelmetDropChance(0);
             if(e instanceof Skeleton) return;
             e.setItemInMainHand(new ItemStack(Material.NETHERITE_SWORD));
         }
@@ -1013,6 +1033,10 @@ public class MobManager {
                 }
             }
             le.getEquipment().setArmorContents(armor);
+            le.getEquipment().setChestplateDropChance(0);
+            le.getEquipment().setLeggingsDropChance(0);
+            le.getEquipment().setBootsDropChance(0);
+            le.getEquipment().setHelmetDropChance(0);
             ItemStack sword = new ItemStack(events.buffsword);
             le.getEquipment().setItemInMainHand(sword);
             le.setCustomName("Nightmare");
