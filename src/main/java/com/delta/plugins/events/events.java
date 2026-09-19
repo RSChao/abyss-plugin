@@ -8,6 +8,7 @@ import com.rschao.plugins.showdowncore.showdownCore.api.runnables.ShowdownScript
 import com.rschao.plugins.showdowncore.showdownCore.api.runnables.registry.ScriptRegistry;
 import com.rschao.plugins.techniqueAPI.tech.Technique;
 import com.rschao.plugins.techniqueAPI.tech.context.TechniqueContext;
+import com.rschao.plugins.techniqueAPI.tech.cooldown.CooldownManager;
 import com.rschao.plugins.techniqueAPI.tech.feedback.hotbarMessage;
 import com.rschao.plugins.techniqueAPI.tech.register.TechRegistry;
 import com.rschao.plugins.techniqueAPI.tech.register.TechniqueNameManager;
@@ -139,7 +140,7 @@ public class events implements Listener {
             else{
                 Technique technique = TechRegistry.getAllTechniques(groupId).get(techIndex);
                 if(technique == null) return;
-                p.playSound(p, "abyss_cast", SoundCategory.MASTER, 1, 1);
+                if(!CooldownManager.isOnCooldown(p, technique.getId())) p.playSound(p, "abyss_cast", SoundCategory.MASTER, 1, 1);
                 technique.use(new TechniqueContext(p, ev.getItem()));
             }
         }
