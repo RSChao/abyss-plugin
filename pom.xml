@@ -42,6 +42,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
 
     </repositories>
 
@@ -128,6 +132,12 @@
             <version>1.21-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>D:\Users\RSChao\Desktop\Programas para PC\paper-upgrade\plugins\fightingplusplus-1.21-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>[26.3.build,)</version>
+            <scope>provided</scope>
         </dependency>
 	</dependencies>
 	<build>
